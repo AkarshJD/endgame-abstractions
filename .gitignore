@@ -1,0 +1,60 @@
+# ================================
+# Virtual Environments
+# ================================
+venv/
+.env/
+
+# ================================
+# Python Cache / Build
+# ================================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+.cache/
+.pytest_cache/
+.mypy_cache/
+
+# ================================
+# Jupyter
+# ================================
+.ipynb_checkpoints/
+
+# ================================
+# Data and Storage (Local Only)
+# ================================
+data/raw/
+data/processed/
+storage/
+*.tb
+*.rtbw
+*.rtbz
+*.tbz
+*.rtb*
+
+# ================================
+# Generated Artifacts
+# ================================
+logs/
+outputs/
+results/
+models/
+checkpoints/
+
+# ================================
+# OS / Editor
+# ================================
+.DS_Store
+Thumbs.db
+
+# VSCode (optional)
+.vscode/
+
+# ================================
+# Archives
+# ================================
+*.zip
+*.tar
+*.gz
+*.7z
