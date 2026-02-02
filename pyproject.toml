@@ -1,0 +1,6 @@
+[project]
+name = "endgame_abstractions"
+version = "0.1.0"
+authors = [
+  { name = "Akarsh J D" }
+]
