@@ -58,3 +58,6 @@ Thumbs.db
 *.tar
 *.gz
 *.7z
+
+# Packaging artifacts
+*.egg-info/

@@ -1,6 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "endgame_abstractions"
+name = "endgame-abstractions"
 version = "0.1.0"
+description = "Learning geometric abstractions from chess endgames"
 authors = [
-  { name = "Akarsh J D" }
+    {name = "Akarsh J D", email = "jdakarsh@gmail.com"}
 ]
+requires-python = ">=3.10"
+
+dependencies = [
+    "python-chess",
+    "numpy",
+    "pandas",
+    "scikit-learn"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
