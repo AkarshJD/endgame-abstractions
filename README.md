@@ -7,7 +7,6 @@ This project studies how optimal play emerges from spatial structure,
 with the goal of discovering minimal coordinate systems and symbolic rules
 underlying solved endgames.
 
-======================================================================
 
 Author
 ----------------------------------------------------------------------
@@ -18,7 +17,6 @@ Founded: 2026
 
 License: MIT  
 Status: Active Research  
-======================================================================
 
 ## Overview
 ----------------------------------------------------------------------
@@ -35,8 +33,6 @@ This project aims to reverse-engineer that structure by:
 - Analyzing emergent concepts (opposition, zugzwang, triangulation, tempo)
 
 Starting with simple endgames (KPK), the framework scales to higher material.
-
-======================================================================
 
 ## ## Repository Structure
 ----------------------------------------------------------------------
@@ -91,7 +87,6 @@ endgame_abstractions/
 
 Large binary data and tablebases are excluded from version control.
 
-======================================================================
 
 ## Installation
 ----------------------------------------------------------------------
@@ -119,7 +114,6 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-======================================================================
 
 ## Syzygy Tablebase Setup (3–4–5 Pieces)
 ----------------------------------------------------------------------
@@ -150,7 +144,6 @@ storage/syzygy/3_4_5/
 
 These files are intentionally ignored by Git.
 
-======================================================================
 
 ## KPK Research Pipeline (Minimum Viable Product)
 ----------------------------------------------------------------------
@@ -182,7 +175,6 @@ Output location:
 data/processed/kpk/
 ```
 
-======================================================================
 
 ## Position Analysis
 ----------------------------------------------------------------------
@@ -195,7 +187,6 @@ python src/endgame/kpk_analyzer.py
 
 Edit the FEN string inside the script.
 
-======================================================================
 
 ## Research Methodology
 ----------------------------------------------------------------------
@@ -212,7 +203,6 @@ The project follows a bottom-up discovery approach:
 Chess knowledge is not manually encoded.
 All abstractions are learned from solved data.
 
-======================================================================
 
 ## Machine Learning Approach
 ----------------------------------------------------------------------
@@ -227,7 +217,6 @@ For each endgame:
 
 This yields symbolic approximations of perfect play.
 
-======================================================================
 
 ## Current Status
 ----------------------------------------------------------------------
@@ -257,7 +246,6 @@ This yields symbolic approximations of perfect play.
 - Neuro-symbolic systems
 - Generative state models
 
-======================================================================
 
 ## Long-Term Research Goal
 ----------------------------------------------------------------------
@@ -274,14 +262,12 @@ The aim is to identify:
 
 governing optimal play.
 
-======================================================================
 
 ## License
 ----------------------------------------------------------------------
 
 See LICENSE file.
 
-======================================================================
 
 ## Citation and Status
 
@@ -294,7 +280,6 @@ publication.
 If you use this code in academic work prior to publication,
 please reference the repository URL and contact the author.
 
-======================================================================
 
 Acknowledgments
 ----------------------------------------------------------------------
