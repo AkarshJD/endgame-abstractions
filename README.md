@@ -8,8 +8,7 @@ with the goal of discovering minimal coordinate systems and symbolic rules
 underlying solved endgames.
 
 
-Author
-----------------------------------------------------------------------
+## Author
 
 Akarsh J D  
 Independent Researcher (AI / ML, Computational Cognition)  
@@ -19,7 +18,6 @@ License: MIT
 Status: Active Research  
 
 ## Overview
-----------------------------------------------------------------------
 
 Modern chess engines rely on large-scale search and evaluation.
 Tablebases provide perfect information, but their internal structure
@@ -34,8 +32,7 @@ This project aims to reverse-engineer that structure by:
 
 Starting with simple endgames (KPK), the framework scales to higher material.
 
-## ## Repository Structure
-----------------------------------------------------------------------
+## Repository Structure
 
 ```bash
 endgame_abstractions/
@@ -89,7 +86,6 @@ Large binary data and tablebases are excluded from version control.
 
 
 ## Installation
-----------------------------------------------------------------------
 
 Clone repository:
 
@@ -116,7 +112,6 @@ pip install -e .
 
 
 ## Syzygy Tablebase Setup (3–4–5 Pieces)
-----------------------------------------------------------------------
 
 Create directory:
 
@@ -146,7 +141,6 @@ These files are intentionally ignored by Git.
 
 
 ## KPK Research Pipeline (Minimum Viable Product)
-----------------------------------------------------------------------
 
 Run full pipeline:
 
@@ -177,7 +171,6 @@ data/processed/kpk/
 
 
 ## Position Analysis
-----------------------------------------------------------------------
 
 Analyze individual positions:
 
@@ -189,7 +182,6 @@ Edit the FEN string inside the script.
 
 
 ## Research Methodology
-----------------------------------------------------------------------
 
 The project follows a bottom-up discovery approach:
 
@@ -205,7 +197,6 @@ All abstractions are learned from solved data.
 
 
 ## Machine Learning Approach
-----------------------------------------------------------------------
 
 For each endgame:
 
@@ -219,7 +210,6 @@ This yields symbolic approximations of perfect play.
 
 
 ## Current Status
-----------------------------------------------------------------------
 
 ### Implemented:
 
@@ -248,7 +238,6 @@ This yields symbolic approximations of perfect play.
 
 
 ## Long-Term Research Goal
-----------------------------------------------------------------------
 
 To characterize perfect chess play as a low-dimensional,
 interpretable dynamical system over state space.
@@ -264,7 +253,6 @@ governing optimal play.
 
 
 ## License
-----------------------------------------------------------------------
 
 See LICENSE file.
 
@@ -281,8 +269,7 @@ If you use this code in academic work prior to publication,
 please reference the repository URL and contact the author.
 
 
-Acknowledgments
-----------------------------------------------------------------------
+## Acknowledgments
 
 This project makes use of Syzygy endgame tablebases
 developed by Ronald de Man and distributed by Lichess.
