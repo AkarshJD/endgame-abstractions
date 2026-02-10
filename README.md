@@ -8,20 +8,29 @@ with the goal of discovering minimal coordinate systems and symbolic rules
 underlying solved endgames.
 
 
-## Author
+## Why This Project
 
-Akarsh J D  
-Independent Researcher (AI / ML, Computational Cognition)  
-Founded: 2026  
+Modern chess engines are superhuman but opaque.  
+Endgame tablebases provide perfect play, but their internal structure is largely uninterpretable.  
+Human players, in contrast, reason using symbolic and geometric concepts.
 
-License: MIT  
-Status: Active Research  
+This project aims to bridge that gap by extracting interpretable structure from solved endgames.
+
+
+## Research Goal
+
+To characterize perfect chess endgame play as a **low-dimensional, interpretable dynamical system** over state space.
+
+The aim is to identify:
+- Invariants
+- Attractors
+- Symbolic laws
+- Minimal coordinate systems
+
+governing optimal play.
+
 
 ## Overview
-
-Modern chess engines rely on large-scale search and evaluation.
-Tablebases provide perfect information, but their internal structure
-remains largely opaque.
 
 This project aims to reverse-engineer that structure by:
 
@@ -31,6 +40,8 @@ This project aims to reverse-engineer that structure by:
 - Analyzing emergent concepts (opposition, zugzwang, triangulation, tempo)
 
 Starting with simple endgames (KPK), the framework scales to higher material.
+
+
 
 ## Repository Structure
 
@@ -42,40 +53,16 @@ endgame_abstractions/
 ├── checkpoints/
 ├── configs/
 ├── data/
-│ ├── processed/
-│ ├── raw/
-│ └── samples/
 ├── docs/
-│ ├── methodology.md
-│ └── roadmap.md
 ├── experiments/
 ├── logs/
 ├── models/
 ├── notebooks/
 ├── outputs/
 ├── papers/
-│ ├── compression_paper/
-│ ├── opposition_paper/
-│ └── zugzwang_paper/
 ├── scripts/
-│ ├── build_kpk_dataset.py
-│ ├── build_kpk_features.py
-│ ├── train_kpk_tree.py
-│ ├── print_kpk_tree.py
-│ └── test_tb.py
 ├── src/
-│ ├── configs/
-│ └── endgame/
-│ ├── concepts/
-│ ├── evaluation/
-│ ├── features/
-│ ├── learning/
-│ ├── tb/
-│ ├── visualization/
-│ └── kpk_analyzer.py
 ├── storage/
-│ └── syzygy/
-│ └── 3_4_5/
 ├── tests/
 ├── pyproject.toml
 ├── requirements.txt
@@ -153,6 +140,7 @@ python scripts/build_kpk_features.py
 python scripts/train_kpk_tree.py
 python scripts/print_kpk_tree.py
 ```
+
 
 ### Pipeline stages:
 
@@ -237,24 +225,16 @@ This yields symbolic approximations of perfect play.
 - Generative state models
 
 
-## Long-Term Research Goal
-
-To characterize perfect chess play as a low-dimensional,
-interpretable dynamical system over state space.
-
-The aim is to identify:
-
-- Invariants
-- Attractors
-- Symbolic laws
-- Minimal coordinate systems
-
-governing optimal play.
-
-
 ## License
 
 See LICENSE file.
+
+
+## Author
+
+Akarsh J D  
+
+Status: Active Research  
 
 
 ## Citation and Status
