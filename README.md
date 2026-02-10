@@ -127,7 +127,7 @@ storage/syzygy/3_4_5/
 These files are intentionally ignored by Git.
 
 
-## KPK Research Pipeline (Minimum Viable Product)
+## KPK Research Pipeline (Baseline)
 
 Run full pipeline:
 
