@@ -1,0 +1,119 @@
+# Feature Registry for Endgame Abstractions
+# Each feature defines a coordinate in the endgame state space.
+# IDs are opaque, stable, and must never be reused.
+#
+# interpretability_level:
+#   0 = raw / opaque
+#   1 = derived geometric
+#   2 = classically named by humans
+
+features:
+  - id: f0001
+    name: d_wk_bk
+    type: distance
+    primitive: true
+    pieces: [WK, BK]
+    geometry: chess_metric
+    formula: chebyshev(wk, bk)
+    description: >
+      Chebyshev distance between the White King and Black King.
+    interpretability_level: 2
+
+  - id: f0002
+    name: d_wk_p
+    type: distance
+    primitive: true
+    pieces: [WK, P]
+    geometry: chess_metric
+    formula: chebyshev(wk, pawn)
+    description: >
+      Chebyshev distance between the White King and the Pawn.
+    interpretability_level: 2
+
+  - id: f0003
+    name: d_bk_p
+    type: distance
+    primitive: true
+    pieces: [BK, P]
+    geometry: chess_metric
+    formula: chebyshev(bk, pawn)
+    description: >
+      Chebyshev distance between the Black King and the Pawn.
+    interpretability_level: 2
+
+  - id: f0004
+    name: pawn_rank
+    type: projection
+    primitive: true
+    pieces: [P]
+    geometry: directed_projection
+    formula: chess.square_rank(pawn)
+    description: >
+      Rank of the pawn from White’s perspective (0–7).
+    interpretability_level: 2
+
+  - id: f0005
+    name: d_promo
+    type: distance
+    primitive: false
+    pieces: [P]
+    geometry: directed_distance
+    formula: 7 - pawn_rank
+    description: >
+      Remaining rank distance until pawn promotion.
+    interpretability_level: 1
+
+  - id: f0006
+    name: wk_bk_file
+    type: alignment
+    primitive: false
+    pieces: [WK, BK]
+    geometry: topological_alignment
+    formula: int(file(wk) == file(bk))
+    description: >
+      Indicator for kings occupying the same file.
+    interpretability_level: 2
+
+  - id: f0007
+    name: wk_bk_rank
+    type: alignment
+    primitive: false
+    pieces: [WK, BK]
+    geometry: topological_alignment
+    formula: int(rank(wk) == rank(bk))
+    description: >
+      Indicator for kings occupying the same rank.
+    interpretability_level: 2
+
+  - id: f0008
+    name: rank_gap
+    type: separation
+    primitive: false
+    pieces: [WK, BK]
+    geometry: projected_1D
+    formula: abs(rank(wk) - rank(bk))
+    description: >
+      Absolute vertical separation between kings.
+    interpretability_level: 1
+
+  - id: f0009
+    name: file_gap
+    type: separation
+    primitive: false
+    pieces: [WK, BK]
+    geometry: projected_1D
+    formula: abs(file(wk) - file(bk))
+    description: >
+      Absolute horizontal separation between kings.
+    interpretability_level: 1
+
+  - id: f0010
+    name: turn
+    type: state
+    primitive: true
+    pieces: [STATE]
+    geometry: temporal
+    formula: int(board.turn == WHITE)
+    description: >
+      Side-to-move indicator.
+    interpretability_level: 2

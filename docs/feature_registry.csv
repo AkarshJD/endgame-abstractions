@@ -1,0 +1,11 @@
+id,name,type,primitive,pieces,geometry,formula,description,interpretability_level
+f0001,d_wk_bk,distance,True,"WK,BK",chess_metric,"chebyshev(wk, bk)",Chebyshev distance between the White King and Black King.,2
+f0002,d_wk_p,distance,True,"WK,P",chess_metric,"chebyshev(wk, pawn)",Chebyshev distance between the White King and the Pawn.,2
+f0003,d_bk_p,distance,True,"BK,P",chess_metric,"chebyshev(bk, pawn)",Chebyshev distance between the Black King and the Pawn.,2
+f0004,pawn_rank,projection,True,P,directed_projection,chess.square_rank(pawn),Rank of the pawn from White’s perspective (0–7).,2
+f0005,d_promo,distance,False,P,directed_distance,7 - pawn_rank,Remaining rank distance until pawn promotion.,1
+f0006,wk_bk_file,alignment,False,"WK,BK",topological_alignment,int(file(wk) == file(bk)),Indicator for kings occupying the same file.,2
+f0007,wk_bk_rank,alignment,False,"WK,BK",topological_alignment,int(rank(wk) == rank(bk)),Indicator for kings occupying the same rank.,2
+f0008,rank_gap,separation,False,"WK,BK",projected_1D,abs(rank(wk) - rank(bk)),Absolute vertical separation between kings.,1
+f0009,file_gap,separation,False,"WK,BK",projected_1D,abs(file(wk) - file(bk)),Absolute horizontal separation between kings.,1
+f0010,turn,state,True,STATE,temporal,int(board.turn == WHITE),Side-to-move indicator.,2
