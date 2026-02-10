@@ -6,7 +6,6 @@ for the Endgame Abstractions project.
 The goal is to extract interpretable, mathematical structures underlying
 perfect play in chess endgames using tablebase supervision and machine learning.
 
----
 
 ## Phase 1: Infrastructure and Baseline (Completed)
 
@@ -29,7 +28,6 @@ Outcome:
 Established that KPK outcomes are partially predictable
 using low-dimensional geometric features.
 
----
 
 ## Phase 2: Feature Enrichment (In Progress)
 
@@ -57,7 +55,6 @@ Evaluation:
 Target:
 > 95%+ accuracy with human-interpretable rules
 
----
 
 ## Phase 3: Rule Extraction and Formalization
 
@@ -77,7 +74,6 @@ Deliverables:
 Outcome:
 A compact, mathematical description of KPK optimal play.
 
----
 
 ## Phase 4: Generalization to Multi-Piece Endgames
 
@@ -99,7 +95,6 @@ Target Endgames:
 Outcome:
 Unified abstraction framework across multiple endgames.
 
----
 
 ## Phase 5: Graph-Theoretic and Dynamical Analysis
 
@@ -119,7 +114,6 @@ Methods:
 Outcome:
 Structural characterization of solved game regions.
 
----
 
 ## Phase 6: Learning-Based Position Generation
 
@@ -139,7 +133,6 @@ Methods:
 Outcome:
 Efficient exploration of high-dimensional endgame spaces.
 
----
 
 ## Phase 7: Human Interface and Visualization
 
@@ -159,7 +152,6 @@ Deliverables:
 Outcome:
 Usable research and teaching platform.
 
----
 
 ## Phase 8: Theoretical Integration
 
@@ -180,7 +172,6 @@ Directions:
 Outcome:
 General theory of perfect-play abstractions.
 
----
 
 ## Phase 9: Publication and Dissemination
 
@@ -200,7 +191,6 @@ Target Venues:
 Outcome:
 Establish Endgame Abstractions as a research program.
 
----
 
 ## Guiding Principles
 
@@ -209,7 +199,6 @@ Establish Endgame Abstractions as a research program.
 - Reproducibility over ad-hoc experimentation
 - Theory-building over benchmarking
 
----
 
 ## Long-Term Vision
 
