@@ -1,36 +1,33 @@
 # Endgame Abstractions
 
 A research framework for extracting human-interpretable geometric and
-algorithmic\
-principles of perfect chess endgame play using tablebases and machine
-learning.
+algorithmic principles of perfect chess endgame play using tablebases
+and machine learning.
 
-This project studies how optimal play emerges from spatial structure,\
+This project studies how optimal play emerges from spatial structure,
 with the goal of discovering minimal coordinate systems and symbolic
-rules\
-underlying solved endgames.
+rules underlying solved endgames.
 
 ## Why This Project
 
-Modern chess engines are superhuman but opaque.\
-Endgame tablebases provide perfect play, but their internal structure is
-largely uninterpretable.\
-Human players, in contrast, reason using symbolic and geometric
-concepts.
+Modern chess engines are superhuman but opaque. Endgame tablebases
+provide perfect play, but their internal structure is largely
+uninterpretable. Human players, in contrast, reason using symbolic and
+geometric concepts.
 
 This project aims to bridge that gap by extracting interpretable
 structure from solved endgames.
 
 ## Research Goal
 
-To characterize perfect chess endgame play as a **low-dimensional,
-interpretable dynamical system** over state space.
+To characterize perfect chess endgame play as a low-dimensional,
+interpretable dynamical system over state space.
 
 The aim is to identify:
 
--   Invariants\
--   Attractors\
--   Symbolic laws\
+-   Invariants
+-   Attractors
+-   Symbolic laws
 -   Minimal coordinate systems
 
 governing optimal play.
@@ -39,9 +36,9 @@ governing optimal play.
 
 This project reverse-engineers that structure by:
 
--   Enumerating solved positions\
--   Extracting geometric features\
--   Learning symbolic rules\
+-   Enumerating solved positions
+-   Extracting geometric features
+-   Learning symbolic rules
 -   Analyzing emergent concepts (opposition, zugzwang, triangulation,
     tempo)
 
@@ -114,7 +111,7 @@ https://tablebase.lichess.ovh/tables/standard/
 
 Required folders:
 
--   3-4-5-wdl\
+-   3-4-5-wdl
 -   3-4-5-dtz
 
 Place all `.rtbw` and `.rtbz` files into:
@@ -159,7 +156,7 @@ labeled via Syzygy.
 
 Current baseline symbolic model:
 
--   \~30 geometric features
+-   ~30 geometric features
 -   Decision tree (max depth ≈ 19)
 -   1088 leaves
 -   331,352 legal positions
@@ -170,13 +167,11 @@ Error cases are concentrated in structurally thin boundary regions
 (rook-pawn edge cases, opposition parity configurations, near-stalemate
 motifs).
 
-Preliminary compression analysis suggests approximately **6×
-reduction**
+Preliminary compression analysis suggests approximately 6× reduction
 relative to the Shannon entropy of the WDL surface.
 
 This supports the working hypothesis that certain endgame value
-functions
-exhibit strong geometric regularity.
+functions exhibit strong geometric regularity.
 
 ## Position Analysis
 
@@ -199,8 +194,8 @@ The project follows a bottom-up discovery approach:
 5.  Rule compression
 6.  Theoretical interpretation
 
-Chess knowledge is not manually encoded.
-All abstractions are learned from solved data.
+Chess knowledge is not manually encoded. All abstractions are learned
+from solved data.
 
 ## Machine Learning Approach
 
@@ -259,17 +254,17 @@ pre-publication stage.
 A formal citation will be provided after peer-reviewed or preprint
 publication.
 
-If you use this code in academic work prior to publication,
-please reference the repository URL and contact the author.
+If you use this code in academic work prior to publication, please
+reference the repository URL and contact the author.
 
 ## Acknowledgments
 
-This project makes use of Syzygy endgame tablebases
-developed by Ronald de Man and distributed by Lichess.
+This project makes use of Syzygy endgame tablebases developed by Ronald
+de Man and distributed by Lichess.
 
 Tablebases are obtained from:
 
 https://tablebase.lichess.ovh/
 
-We thank the Lichess community for providing open access
-to high-quality endgame data for research purposes.
+We thank the Lichess community for providing open access to high-quality
+endgame data for research purposes.
