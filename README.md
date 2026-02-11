@@ -96,7 +96,7 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-## Syzygy Tablebase Setup (3--4--5 Pieces)
+## Syzygy Tablebase Setup (3-4-5 Pieces)
 
 Create directory:
 
