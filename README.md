@@ -140,10 +140,10 @@ python scripts/print_kpk_tree.py
 
 ### Pipeline stages:
 
-1.  Enumerate legal KPK positions\
-2.  Query Syzygy tablebase\
-3.  Extract geometric features\
-4.  Train symbolic model\
+1.  Enumerate legal KPK positions
+2.  Query Syzygy tablebase
+3.  Extract geometric features
+4.  Train symbolic model
 5.  Print learned rules
 
 Output location:
@@ -159,23 +159,23 @@ labeled via Syzygy.
 
 Current baseline symbolic model:
 
--   \~30 geometric features\
--   Decision tree (max depth ≈ 19)\
--   1088 leaves\
--   331,352 legal positions\
--   99.9837% full-dataset accuracy\
+-   \~30 geometric features
+-   Decision tree (max depth ≈ 19)
+-   1088 leaves
+-   331,352 legal positions
+-   99.9837% full-dataset accuracy
 -   54 boundary misclassifications
 
-Error cases are concentrated in structurally thin boundary regions\
+Error cases are concentrated in structurally thin boundary regions
 (rook-pawn edge cases, opposition parity configurations, near-stalemate
 motifs).
 
 Preliminary compression analysis suggests approximately **6×
-reduction**\
+reduction**
 relative to the Shannon entropy of the WDL surface.
 
 This supports the working hypothesis that certain endgame value
-functions\
+functions
 exhibit strong geometric regularity.
 
 ## Position Analysis
@@ -192,24 +192,24 @@ Edit the FEN string inside the script.
 
 The project follows a bottom-up discovery approach:
 
-1.  Exhaustive state enumeration\
-2.  Perfect-information labeling\
-3.  Feature construction\
-4.  Symbolic learning\
-5.  Rule compression\
+1.  Exhaustive state enumeration
+2.  Perfect-information labeling
+3.  Feature construction
+4.  Symbolic learning
+5.  Rule compression
 6.  Theoretical interpretation
 
-Chess knowledge is not manually encoded.\
+Chess knowledge is not manually encoded.
 All abstractions are learned from solved data.
 
 ## Machine Learning Approach
 
 For each endgame:
 
--   State space is fully enumerated\
--   Each position is labeled (WDL, DTZ)\
--   Geometric features are computed\
--   Decision trees and rule learners are trained\
+-   State space is fully enumerated
+-   Each position is labeled (WDL, DTZ)
+-   Geometric features are computed
+-   Decision trees and rule learners are trained
 -   Learned rules are simplified and interpreted
 
 This yields symbolic approximations of perfect play.
@@ -218,27 +218,27 @@ This yields symbolic approximations of perfect play.
 
 ### Implemented:
 
--   Syzygy integration\
--   KPK dataset generation\
--   Geometric feature engineering\
--   Decision tree learning\
--   Full-dataset validation\
--   Misclassification boundary analysis\
+-   Syzygy integration
+-   KPK dataset generation
+-   Geometric feature engineering
+-   Decision tree learning
+-   Full-dataset validation
+-   Misclassification boundary analysis
 -   Compression estimation
 
 ### In Progress:
 
--   Feature ablation studies\
--   Boundary manifold characterization\
--   Visualization layer\
+-   Feature ablation studies
+-   Boundary manifold characterization
+-   Visualization layer
 -   Generalization testing (KRK, KPPK)
 
 ### Planned:
 
--   KRKP, KBNK, KQK\
--   Multi-piece abstraction\
--   Graph-theoretic modeling\
--   Neuro-symbolic systems\
+-   KRKP, KBNK, KQK
+-   Multi-piece abstraction
+-   Graph-theoretic modeling
+-   Neuro-symbolic systems
 -   Generative state models
 
 ## License
@@ -253,23 +253,23 @@ Status: Active Research
 
 ## Citation and Status
 
-This project is an active research program and is currently in\
+This project is an active research program and is currently in
 pre-publication stage.
 
-A formal citation will be provided after peer-reviewed or preprint\
+A formal citation will be provided after peer-reviewed or preprint
 publication.
 
-If you use this code in academic work prior to publication,\
+If you use this code in academic work prior to publication,
 please reference the repository URL and contact the author.
 
 ## Acknowledgments
 
-This project makes use of Syzygy endgame tablebases\
+This project makes use of Syzygy endgame tablebases
 developed by Ronald de Man and distributed by Lichess.
 
 Tablebases are obtained from:
 
 https://tablebase.lichess.ovh/
 
-We thank the Lichess community for providing open access\
+We thank the Lichess community for providing open access
 to high-quality endgame data for research purposes.
