@@ -8,6 +8,11 @@
 #   2 = classically named by humans
 
 features:
+
+  # ------------------------------------------------------------------
+  # Core metric geometry (Chebyshev)
+  # ------------------------------------------------------------------
+
   - id: f0001
     name: d_wk_bk
     type: distance
@@ -41,6 +46,80 @@ features:
       Chebyshev distance between the Black King and the Pawn.
     interpretability_level: 2
 
+  # ------------------------------------------------------------------
+  # Alternative metric geometry
+  # ------------------------------------------------------------------
+
+  - id: f0011
+    name: m_wk_bk
+    type: distance
+    primitive: true
+    pieces: [WK, BK]
+    geometry: manhattan_metric
+    formula: manhattan(wk, bk)
+    description: >
+      Manhattan distance between the two kings.
+    interpretability_level: 1
+
+  - id: f0012
+    name: m_wk_p
+    type: distance
+    primitive: true
+    pieces: [WK, P]
+    geometry: manhattan_metric
+    formula: manhattan(wk, pawn)
+    description: >
+      Manhattan distance between the White King and the Pawn.
+    interpretability_level: 1
+
+  - id: f0013
+    name: m_bk_p
+    type: distance
+    primitive: true
+    pieces: [BK, P]
+    geometry: manhattan_metric
+    formula: manhattan(bk, pawn)
+    description: >
+      Manhattan distance between the Black King and the Pawn.
+    interpretability_level: 1
+
+  - id: f0014
+    name: e2_wk_bk
+    type: distance
+    primitive: true
+    pieces: [WK, BK]
+    geometry: euclidean_squared
+    formula: euclid_sq(wk, bk)
+    description: >
+      Squared Euclidean distance between the two kings.
+    interpretability_level: 1
+
+  - id: f0015
+    name: e2_wk_p
+    type: distance
+    primitive: true
+    pieces: [WK, P]
+    geometry: euclidean_squared
+    formula: euclid_sq(wk, pawn)
+    description: >
+      Squared Euclidean distance between the White King and the Pawn.
+    interpretability_level: 1
+
+  - id: f0016
+    name: e2_bk_p
+    type: distance
+    primitive: true
+    pieces: [BK, P]
+    geometry: euclidean_squared
+    formula: euclid_sq(bk, pawn)
+    description: >
+      Squared Euclidean distance between the Black King and the Pawn.
+    interpretability_level: 1
+
+  # ------------------------------------------------------------------
+  # Pawn progress and file geometry
+  # ------------------------------------------------------------------
+
   - id: f0004
     name: pawn_rank
     type: projection
@@ -51,6 +130,28 @@ features:
     description: >
       Rank of the pawn from White’s perspective (0–7).
     interpretability_level: 2
+
+  - id: f0017
+    name: pawn_rank_norm
+    type: projection
+    primitive: true
+    pieces: [P]
+    geometry: normalized_projection
+    formula: pawn_rank / 7.0
+    description: >
+      Normalized pawn rank in the interval [0, 1].
+    interpretability_level: 1
+
+  - id: f0018
+    name: pawn_file
+    type: projection
+    primitive: true
+    pieces: [P]
+    geometry: lateral_projection
+    formula: chess.square_file(pawn)
+    description: >
+      File index of the pawn (0–7).
+    interpretability_level: 1
 
   - id: f0005
     name: d_promo
@@ -63,27 +164,79 @@ features:
       Remaining rank distance until pawn promotion.
     interpretability_level: 1
 
-  - id: f0006
-    name: wk_bk_file
-    type: alignment
-    primitive: false
-    pieces: [WK, BK]
-    geometry: topological_alignment
-    formula: int(file(wk) == file(bk))
-    description: >
-      Indicator for kings occupying the same file.
-    interpretability_level: 2
+  # ------------------------------------------------------------------
+  # Signed directional geometry
+  # ------------------------------------------------------------------
 
-  - id: f0007
-    name: wk_bk_rank
-    type: alignment
-    primitive: false
+  - id: f0019
+    name: wk_bk_dr
+    type: offset
+    primitive: true
     pieces: [WK, BK]
-    geometry: topological_alignment
-    formula: int(rank(wk) == rank(bk))
+    geometry: signed_projection
+    formula: rank(wk) - rank(bk)
     description: >
-      Indicator for kings occupying the same rank.
-    interpretability_level: 2
+      Signed rank offset between White King and Black King.
+    interpretability_level: 0
+
+  - id: f0020
+    name: wk_bk_df
+    type: offset
+    primitive: true
+    pieces: [WK, BK]
+    geometry: signed_projection
+    formula: file(wk) - file(bk)
+    description: >
+      Signed file offset between White King and Black King.
+    interpretability_level: 0
+
+  - id: f0021
+    name: wk_p_dr
+    type: offset
+    primitive: true
+    pieces: [WK, P]
+    geometry: signed_projection
+    formula: rank(wk) - pawn_rank
+    description: >
+      Signed rank offset between White King and the Pawn.
+    interpretability_level: 0
+
+  - id: f0022
+    name: wk_p_df
+    type: offset
+    primitive: true
+    pieces: [WK, P]
+    geometry: signed_projection
+    formula: file(wk) - file(pawn)
+    description: >
+      Signed file offset between White King and the Pawn.
+    interpretability_level: 0
+
+  - id: f0023
+    name: bk_p_dr
+    type: offset
+    primitive: true
+    pieces: [BK, P]
+    geometry: signed_projection
+    formula: rank(bk) - pawn_rank
+    description: >
+      Signed rank offset between Black King and the Pawn.
+    interpretability_level: 0
+
+  - id: f0024
+    name: bk_p_df
+    type: offset
+    primitive: true
+    pieces: [BK, P]
+    geometry: signed_projection
+    formula: file(bk) - file(pawn)
+    description: >
+      Signed file offset between Black King and the Pawn.
+    interpretability_level: 0
+
+  # ------------------------------------------------------------------
+  # Absolute gaps (retained for comparison)
+  # ------------------------------------------------------------------
 
   - id: f0008
     name: rank_gap
@@ -106,6 +259,114 @@ features:
     description: >
       Absolute horizontal separation between kings.
     interpretability_level: 1
+
+  # ------------------------------------------------------------------
+  # Board-edge and boundary geometry
+  # ------------------------------------------------------------------
+
+  - id: f0025
+    name: wk_edge
+    type: boundary_distance
+    primitive: true
+    pieces: [WK]
+    geometry: board_topology
+    formula: dist_to_edge(wk)
+    description: >
+      Minimum distance from the White King to the board edge.
+    interpretability_level: 1
+
+  - id: f0026
+    name: bk_edge
+    type: boundary_distance
+    primitive: true
+    pieces: [BK]
+    geometry: board_topology
+    formula: dist_to_edge(bk)
+    description: >
+      Minimum distance from the Black King to the board edge.
+    interpretability_level: 1
+
+  - id: f0027
+    name: p_edge
+    type: boundary_distance
+    primitive: true
+    pieces: [P]
+    geometry: board_topology
+    formula: dist_to_edge(pawn)
+    description: >
+      Minimum distance from the pawn to the board edge.
+    interpretability_level: 1
+
+  # ------------------------------------------------------------------
+  # Local mobility (static geometry)
+  # ------------------------------------------------------------------
+
+  - id: f0028
+    name: wk_mobility
+    type: mobility
+    primitive: true
+    pieces: [WK]
+    geometry: local_topology
+    formula: king_mobility(wk)
+    description: >
+      Number of geometrically available adjacent squares for the White King.
+    interpretability_level: 1
+
+  - id: f0029
+    name: bk_mobility
+    type: mobility
+    primitive: true
+    pieces: [BK]
+    geometry: local_topology
+    formula: king_mobility(bk)
+    description: >
+      Number of geometrically available adjacent squares for the Black King.
+    interpretability_level: 1
+
+  # ------------------------------------------------------------------
+  # Ordinal pawn–king ordering
+  # ------------------------------------------------------------------
+
+  - id: f0030
+    name: wk_vs_p_rank
+    type: ordering
+    primitive: true
+    pieces: [WK, P]
+    geometry: ordinal_relation
+    formula: rank(wk) - pawn_rank
+    description: >
+      Signed rank ordering of the White King relative to the Pawn.
+    interpretability_level: 0
+
+  - id: f0031
+    name: bk_vs_p_rank
+    type: ordering
+    primitive: true
+    pieces: [BK, P]
+    geometry: ordinal_relation
+    formula: rank(bk) - pawn_rank
+    description: >
+      Signed rank ordering of the Black King relative to the Pawn.
+    interpretability_level: 0
+
+  # ------------------------------------------------------------------
+  # Triangle geometry
+  # ------------------------------------------------------------------
+
+  - id: f0032
+    name: triangle_area2
+    type: area
+    primitive: true
+    pieces: [WK, BK, P]
+    geometry: planar_geometry
+    formula: triangle_area2(wk, bk, pawn)
+    description: >
+      Twice the area of the triangle formed by the two kings and the pawn.
+    interpretability_level: 0
+
+  # ------------------------------------------------------------------
+  # Temporal state
+  # ------------------------------------------------------------------
 
   - id: f0010
     name: turn

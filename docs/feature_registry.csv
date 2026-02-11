@@ -2,10 +2,30 @@ id,name,type,primitive,pieces,geometry,formula,description,interpretability_leve
 f0001,d_wk_bk,distance,True,"WK,BK",chess_metric,"chebyshev(wk, bk)",Chebyshev distance between the White King and Black King.,2
 f0002,d_wk_p,distance,True,"WK,P",chess_metric,"chebyshev(wk, pawn)",Chebyshev distance between the White King and the Pawn.,2
 f0003,d_bk_p,distance,True,"BK,P",chess_metric,"chebyshev(bk, pawn)",Chebyshev distance between the Black King and the Pawn.,2
+f0011,m_wk_bk,distance,True,"WK,BK",manhattan_metric,"manhattan(wk, bk)",Manhattan distance between the two kings.,1
+f0012,m_wk_p,distance,True,"WK,P",manhattan_metric,"manhattan(wk, pawn)",Manhattan distance between the White King and the Pawn.,1
+f0013,m_bk_p,distance,True,"BK,P",manhattan_metric,"manhattan(bk, pawn)",Manhattan distance between the Black King and the Pawn.,1
+f0014,e2_wk_bk,distance,True,"WK,BK",euclidean_squared,"euclid_sq(wk, bk)",Squared Euclidean distance between the two kings.,1
+f0015,e2_wk_p,distance,True,"WK,P",euclidean_squared,"euclid_sq(wk, pawn)",Squared Euclidean distance between the White King and the Pawn.,1
+f0016,e2_bk_p,distance,True,"BK,P",euclidean_squared,"euclid_sq(bk, pawn)",Squared Euclidean distance between the Black King and the Pawn.,1
 f0004,pawn_rank,projection,True,P,directed_projection,chess.square_rank(pawn),Rank of the pawn from White’s perspective (0–7).,2
+f0017,pawn_rank_norm,projection,True,P,normalized_projection,pawn_rank / 7.0,"Normalized pawn rank in the interval [0, 1].",1
+f0018,pawn_file,projection,True,P,lateral_projection,chess.square_file(pawn),File index of the pawn (0–7).,1
 f0005,d_promo,distance,False,P,directed_distance,7 - pawn_rank,Remaining rank distance until pawn promotion.,1
-f0006,wk_bk_file,alignment,False,"WK,BK",topological_alignment,int(file(wk) == file(bk)),Indicator for kings occupying the same file.,2
-f0007,wk_bk_rank,alignment,False,"WK,BK",topological_alignment,int(rank(wk) == rank(bk)),Indicator for kings occupying the same rank.,2
+f0019,wk_bk_dr,offset,True,"WK,BK",signed_projection,rank(wk) - rank(bk),Signed rank offset between White King and Black King.,0
+f0020,wk_bk_df,offset,True,"WK,BK",signed_projection,file(wk) - file(bk),Signed file offset between White King and Black King.,0
+f0021,wk_p_dr,offset,True,"WK,P",signed_projection,rank(wk) - pawn_rank,Signed rank offset between White King and the Pawn.,0
+f0022,wk_p_df,offset,True,"WK,P",signed_projection,file(wk) - file(pawn),Signed file offset between White King and the Pawn.,0
+f0023,bk_p_dr,offset,True,"BK,P",signed_projection,rank(bk) - pawn_rank,Signed rank offset between Black King and the Pawn.,0
+f0024,bk_p_df,offset,True,"BK,P",signed_projection,file(bk) - file(pawn),Signed file offset between Black King and the Pawn.,0
 f0008,rank_gap,separation,False,"WK,BK",projected_1D,abs(rank(wk) - rank(bk)),Absolute vertical separation between kings.,1
 f0009,file_gap,separation,False,"WK,BK",projected_1D,abs(file(wk) - file(bk)),Absolute horizontal separation between kings.,1
+f0025,wk_edge,boundary_distance,True,WK,board_topology,dist_to_edge(wk),Minimum distance from the White King to the board edge.,1
+f0026,bk_edge,boundary_distance,True,BK,board_topology,dist_to_edge(bk),Minimum distance from the Black King to the board edge.,1
+f0027,p_edge,boundary_distance,True,P,board_topology,dist_to_edge(pawn),Minimum distance from the pawn to the board edge.,1
+f0028,wk_mobility,mobility,True,WK,local_topology,king_mobility(wk),Number of geometrically available adjacent squares for the White King.,1
+f0029,bk_mobility,mobility,True,BK,local_topology,king_mobility(bk),Number of geometrically available adjacent squares for the Black King.,1
+f0030,wk_vs_p_rank,ordering,True,"WK,P",ordinal_relation,rank(wk) - pawn_rank,Signed rank ordering of the White King relative to the Pawn.,0
+f0031,bk_vs_p_rank,ordering,True,"BK,P",ordinal_relation,rank(bk) - pawn_rank,Signed rank ordering of the Black King relative to the Pawn.,0
+f0032,triangle_area2,area,True,"WK,BK,P",planar_geometry,"triangle_area2(wk, bk, pawn)",Twice the area of the triangle formed by the two kings and the pawn.,0
 f0010,turn,state,True,STATE,temporal,int(board.turn == WHITE),Side-to-move indicator.,2
