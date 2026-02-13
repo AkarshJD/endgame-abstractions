@@ -128,8 +128,27 @@ in the constructed geometric coordinate system.
 
 This is a strong compression signal.
 
+## 3.3 Overfitting Considerations
 
-# 3.3 Logical Feature Algebra
+Unlike typical machine learning settings, the KPK dataset:
+- Exhaustively enumerates the full legal state space
+- Uses noise-free tablebase supervision
+- Contains no stochastic label uncertainty
+
+Therefore, the high test accuracy does not indicate classical statistical overfitting.
+
+Instead, model capacity should be interpreted as:
+- Partition complexity of a deterministic value function
+- Structural expressivity required to represent geometric boundaries
+
+The residual 54 misclassifications are not due to sampling noise,
+but to insufficient representational alignment in the chosen feature basis.
+
+Thus, the model approximates a fixed deterministic function,
+not a noisy empirical distribution.
+
+
+## 3.4 Logical Feature Algebra
 
 Geometric primitives alone do not fully explain compression.
 
@@ -159,7 +178,7 @@ Thus the tree is implementing a Boolean circuit
 over geometric primitives.
 
 
-# 3.4 Boolean Basis and Algebraic Compression
+## 3.5 Boolean Basis and Algebraic Compression
 
 Consider the win condition as a Boolean function:
 
@@ -187,7 +206,7 @@ This suggests additional compression is possible
 through Boolean algebra simplification.
 
 
-# 3.5 XOR and Parity Structures
+## 3.6 XOR and Parity Structures
 
 Opposition and tempo introduce parity-sensitive structure.
 
@@ -209,7 +228,7 @@ Recognizing XOR structure explicitly
 can reduce symbolic length.
 
 
-# 3.6 Feature Coupling and Clustering
+## 3.7 Feature Coupling and Clustering
 
 Primitive features can be grouped by geometric theme:
 
@@ -243,7 +262,7 @@ ParityControl := opposition XOR tempo_parity
 This converts flat features into structured logical units.
 
 
-# 3.7 Toward Shorter Trees via Logical Factorization
+## 3.8 Toward Shorter Trees via Logical Factorization
 
 Tree length inflation occurs when:
 
@@ -270,7 +289,7 @@ rather than:
 L(tree splits)
 
 
-# 3.8 Interpretability Implication
+## 3.9 Interpretability Implication
 
 Geometric features explain *what varies spatially*.
 
@@ -288,7 +307,7 @@ may reduce description length further
 and produce more human-readable laws.
 
 
-# 3.9 Research Direction
+## 3.10 Research Direction
 
 Open Questions:
 
