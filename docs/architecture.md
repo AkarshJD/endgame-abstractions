@@ -41,8 +41,12 @@ endgame_abstractions/
 │
 ├── docs/
 │   ├── architecture.md
+│   ├── combinatorics_and_compression.md
+│   ├── feature_registry.csv
+│   ├── feature_registry.md
 │   ├── methodology.md
-│   └── roadmap.md
+│   ├── roadmap.md
+│   └── theory_artifacts.md
 │
 ├── logs/
 │   ├── kpk/
@@ -80,6 +84,8 @@ endgame_abstractions/
 │       └── 3_4_5/
 │
 └── tests/
+│
+└── venv/
 ```
 
 Large binary data (Syzygy tablebases) and experiment logs are excluded from version control.
