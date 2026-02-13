@@ -20,28 +20,29 @@ surface is geometrically structured
 
 ## 1.1 Naïve Enumeration
 
-Ignoring legality:
+Ignoring legality constraints:
 
 - White King: 64 squares
 - Black King: 64 squares
 - Pawn: 64 squares
+- Side to move: 2
 
 Naïve upper bound:
 
-64^3 = 262,144 positions
+2 × 64^3 = 524,288 positions
 
-However, constraints apply:
+Legality constraints remove:
 
-- Kings cannot overlap
-- Kings cannot be adjacent
-- Pawn cannot occupy rank 1 or 8
-- Side to move doubles state space
-- Illegal check positions removed
+- King overlap
+- Adjacent kings
+- Pawn on ranks 1 or 8
+- Illegal check states
+- Impossible exposures
 
-After legality filtering and normalization,
-the exhaustive KPK dataset contains:
+After legality filtering, the exhaustive KPK dataset contains:
 
 331,352 legal positions
+
 
 This is the full supervised ground-truth
 value surface derived from Syzygy.
