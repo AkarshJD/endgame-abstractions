@@ -29,3 +29,16 @@ f0030,wk_vs_p_rank,ordering,True,"WK,P",ordinal_relation,rank(wk) - pawn_rank,Si
 f0031,bk_vs_p_rank,ordering,True,"BK,P",ordinal_relation,rank(bk) - pawn_rank,Signed rank ordering of the Black King relative to the Pawn.,0
 f0032,triangle_area2,area,True,"WK,BK,P",planar_geometry,"triangle_area2(wk, bk, pawn)",Twice the area of the triangle formed by the two kings and the pawn.,0
 f0010,turn,state,True,STATE,temporal,int(board.turn == WHITE),Side-to-move indicator.,2
+f0033,d_wr_bk,distance,True,"WR,BK",chess_metric,"chebyshev(rook, bk)",Chebyshev distance between the White Rook and Black King.,2
+f0034,d_wq_bk,distance,True,"WQ,BK",chess_metric,"chebyshev(queen, bk)",Chebyshev distance between the White Queen and Black King.,2
+f0035,d_wk_wr,distance,True,"WK,WR",chess_metric,"chebyshev(wk, rook)",Chebyshev distance between the White King and White Rook.,2
+f0036,rook_cut_rank,alignment,False,"WR,BK",linear_alignment,rank(rook) == rank(bk),Whether the rook cuts off the Black King along the rank.,2
+f0037,rook_cut_file,alignment,False,"WR,BK",linear_alignment,file(rook) == file(bk),Whether the rook cuts off the Black King along the file.,2
+f0038,box_rank_gap,separation,False,"WR,BK",projected_1D,abs(rank(rook) - rank(bk)),Rank separation defining one dimension of the confinement box.,1
+f0039,box_file_gap,separation,False,"WR,BK",projected_1D,abs(file(rook) - file(bk)),File separation defining one dimension of the confinement box.,1
+f0040,box_area,area,False,"WR,BK",planar_geometry,box_rank_gap * box_file_gap,Area of the rook–king confinement rectangle.,2
+f0041,bk_on_edge,boundary_state,False,BK,board_topology,dist_to_edge(bk) == 0,Whether the Black King is on the board edge.,2
+f0042,bk_in_corner,boundary_state,False,BK,board_topology,"dist_to_edge(bk) == 0 AND file(bk) in {0,7} AND rank(bk) in {0,7}
+",Whether the Black King is in a corner square.,2
+f0043,rook_protected,coordination,False,"WK,WR",proximity,"chebyshev(wk, rook) == 1",Whether the rook is protected by the White King.,2
+f0044,bk_corner_distance,distance,False,BK,board_topology,min_distance_to_corner(bk),Chebyshev distance from Black King to nearest corner.,2

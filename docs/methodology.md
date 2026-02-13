@@ -8,8 +8,6 @@ All experiments were performed on the fully enumerated KPK state space
 Evaluation uses a stratified 80/20 train-test split.
 
 
----
-
 ## Stage 1: Minimal Geometric Baseline
 
 **Features:**
@@ -32,8 +30,6 @@ Evaluation uses a stratified 80/20 train-test split.
 - Strong underfitting of fine geometric distinctions.
 
 
----
-
 ## Stage 2: Hyperparameter Tuning (Same Features)
 
 **Model Adjustments:**
@@ -47,8 +43,6 @@ Evaluation uses a stratified 80/20 train-test split.
 - Still limited by insufficient geometric basis.
 - Boundary errors remain widespread.
 
-
----
 
 ## Stage 3: Expanded Geometric Feature Basis (~30 Features)
 
@@ -85,8 +79,6 @@ Per-class performance:
 - Draw class remains most ambiguous.
 
 
----
-
 ## Stage 4: Full Tuning + Deep Tree
 
 **Model:**
@@ -120,8 +112,6 @@ Full-dataset validation:
 - Near-stalemate boundary motifs
 
 
----
-
 ## Observations
 
 1. Increasing model capacity alone (Stage 2) provides limited improvement.
@@ -134,8 +124,6 @@ Preliminary description-length estimates indicate
 ~6× compression relative to Shannon entropy of the WDL surface.
 
 
----
-
 ## Research Implication
 
 The progressive improvement across stages suggests that:
@@ -147,3 +135,114 @@ The progressive improvement across stages suggests that:
 
 This supports the working hypothesis that certain endgame value functions
 admit compact symbolic representations under appropriate geometric bases.
+
+
+## KPK Regression Results (DTZ)
+
+In addition to WDL classification, regression models were trained to
+predict DTZ (Distance to Zeroing move).
+
+Experiments were performed separately by structural regime:
+
+### Winning Positions (WDL = 2)
+
+- Samples: ~125k
+- MAE ≈ 0.22
+- R² ≈ 0.83
+- Tree depth ≈ 10
+- Leaves ≈ 200
+
+Interpretation:
+- Winning race geometry exhibits moderate compressibility.
+- DTZ surface is not perfectly axis-aligned.
+- Structural complexity remains within win manifold.
+
+
+### Losing Positions (WDL = -2)
+
+- MAE ≈ 0.25
+- R² ≈ 0.83
+- Tree depth ≈ 10
+- Leaves ≈ 200
+
+Interpretation:
+- Symmetric structural behavior to winning regime.
+- Similar geometric complexity profile.
+
+
+### Draw Positions (WDL = 0)
+
+- MAE = 0.0
+- R² = 1.0
+- Tree depth = 0
+- Leaves = 1
+
+Interpretation:
+- DTZ constant in draw regime.
+- Structurally trivial value surface.
+- No geometric variation to model.
+
+
+### Regime Observation
+
+Different WDL regimes exhibit different structural compressibility:
+
+- Draw manifold: trivial
+- Win/Loss manifolds: moderately compressible
+- Classification surface: highly compressible
+
+This suggests that value surfaces decompose into structurally distinct
+submanifolds.
+
+
+## KRK Baseline Regression Results
+
+KRK experiments model DTZ directly (regression only).
+
+Dataset:
+- ~399k legal KRK positions
+- Fully labeled via Syzygy
+
+### Baseline Tree
+
+- MAE ≈ 2.09
+- R² ≈ 0.981
+- Depth ≈ 10
+- Leaves ≈ 658
+
+### Tuned Tree
+
+- MAE ≈ 1.68
+- R² ≈ 0.986
+- Depth ≈ 26
+- Leaves ≈ 17,959
+
+After feature refinement:
+
+- MAE ≈ 1.51
+- R² ≈ 0.9898
+- Depth ≈ 10
+- Leaves ≈ 706
+
+### Interpretation
+
+- KRK DTZ surface is significantly smoother than KPK race surface.
+- Confinement geometry dominates structural variation.
+- Moderate-depth trees achieve high explanatory power.
+- Regression is more stable than KPK race regime.
+
+---
+
+## Comparative Structural Insight
+
+| Endgame | Task | Structural Complexity | Compressibility |
+|----------|------|----------------------|----------------|
+| KPK | WDL Classification | Thin boundary manifold | Very High |
+| KPK | DTZ Regression (Win/Loss) | Race geometry | Moderate |
+| KRK | DTZ Regression | Confinement geometry | High |
+
+These observations reinforce the hypothesis that:
+
+- Different endgames exhibit distinct geometric regimes.
+- Value-function complexity varies by structural mechanism.
+- Symbolic compression depends on underlying geometry.

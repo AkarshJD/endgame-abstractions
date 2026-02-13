@@ -378,3 +378,141 @@ features:
     description: >
       Side-to-move indicator.
     interpretability_level: 2
+
+  # ------------------------------------------------------------------
+  # Sliding piece confinement geometry (KRK, KQK, KBNK, etc.)
+  # ------------------------------------------------------------------
+
+  - id: f0033
+    name: d_wr_bk
+    type: distance
+    primitive: true
+    pieces: [WR, BK]
+    geometry: chess_metric
+    formula: chebyshev(rook, bk)
+    description: >
+      Chebyshev distance between the White Rook and Black King.
+    interpretability_level: 2
+
+  - id: f0034
+    name: d_wq_bk
+    type: distance
+    primitive: true
+    pieces: [WQ, BK]
+    geometry: chess_metric
+    formula: chebyshev(queen, bk)
+    description: >
+      Chebyshev distance between the White Queen and Black King.
+    interpretability_level: 2
+
+  - id: f0035
+    name: d_wk_wr
+    type: distance
+    primitive: true
+    pieces: [WK, WR]
+    geometry: chess_metric
+    formula: chebyshev(wk, rook)
+    description: >
+      Chebyshev distance between the White King and White Rook.
+    interpretability_level: 2
+
+  - id: f0036
+    name: rook_cut_rank
+    type: alignment
+    primitive: false
+    pieces: [WR, BK]
+    geometry: linear_alignment
+    formula: rank(rook) == rank(bk)
+    description: >
+      Whether the rook cuts off the Black King along the rank.
+    interpretability_level: 2
+
+  - id: f0037
+    name: rook_cut_file
+    type: alignment
+    primitive: false
+    pieces: [WR, BK]
+    geometry: linear_alignment
+    formula: file(rook) == file(bk)
+    description: >
+      Whether the rook cuts off the Black King along the file.
+    interpretability_level: 2
+
+  - id: f0038
+    name: box_rank_gap
+    type: separation
+    primitive: false
+    pieces: [WR, BK]
+    geometry: projected_1D
+    formula: abs(rank(rook) - rank(bk))
+    description: >
+      Rank separation defining one dimension of the confinement box.
+    interpretability_level: 1
+
+  - id: f0039
+    name: box_file_gap
+    type: separation
+    primitive: false
+    pieces: [WR, BK]
+    geometry: projected_1D
+    formula: abs(file(rook) - file(bk))
+    description: >
+      File separation defining one dimension of the confinement box.
+    interpretability_level: 1
+
+  - id: f0040
+    name: box_area
+    type: area
+    primitive: false
+    pieces: [WR, BK]
+    geometry: planar_geometry
+    formula: box_rank_gap * box_file_gap
+    description: >
+      Area of the rook–king confinement rectangle.
+    interpretability_level: 2
+
+  - id: f0041
+    name: bk_on_edge
+    type: boundary_state
+    primitive: false
+    pieces: [BK]
+    geometry: board_topology
+    formula: dist_to_edge(bk) == 0
+    description: >
+      Whether the Black King is on the board edge.
+    interpretability_level: 2
+
+  - id: f0042
+    name: bk_in_corner
+    type: boundary_state
+    primitive: false
+    pieces: [BK]
+    geometry: board_topology
+    formula: >
+      dist_to_edge(bk) == 0 AND
+      file(bk) in {0,7} AND rank(bk) in {0,7}
+    description: >
+      Whether the Black King is in a corner square.
+    interpretability_level: 2
+
+  - id: f0043
+    name: rook_protected
+    type: coordination
+    primitive: false
+    pieces: [WK, WR]
+    geometry: proximity
+    formula: chebyshev(wk, rook) == 1
+    description: >
+      Whether the rook is protected by the White King.
+    interpretability_level: 2
+
+  - id: f0044
+    name: bk_corner_distance
+    type: distance
+    primitive: false
+    pieces: [BK]
+    geometry: board_topology
+    formula: min_distance_to_corner(bk)
+    description: >
+      Chebyshev distance from Black King to nearest corner.
+    interpretability_level: 2
