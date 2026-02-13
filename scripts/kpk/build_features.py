@@ -24,6 +24,7 @@ def main():
         feats = extract_kpk_features(board)
 
         feats["wdl"] = row["wdl"]
+        feats["dtz"] = row["dtz"]
 
         rows.append(feats)
 
