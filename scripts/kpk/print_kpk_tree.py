@@ -5,7 +5,7 @@ from sklearn.tree import DecisionTreeClassifier, export_text
 def main():
     df = pd.read_csv("data/processed/kpk/features.csv")
 
-    X = df.drop(columns=["wdl"])
+    X = df.drop(columns=["wdl", "dtz"])
     y = df["wdl"]
 
     model = DecisionTreeClassifier(

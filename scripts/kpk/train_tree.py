@@ -15,7 +15,7 @@ def main():
     path = "data/processed/kpk/features.csv"
     df = pd.read_csv(path)
 
-    X = df.drop(columns=["wdl"])
+    X = df.drop(columns=["wdl", "dtz"])
     y = df["wdl"]
 
     # ----------------------------

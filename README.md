@@ -57,69 +57,76 @@ docs/architecture.md
 
 ## Installation
 
-Clone repository:
-
 ```bash
 git clone <repository-url>
 cd endgame_abstractions
-```
 
-Create virtual environment:
-
-```bash
 python3 -m venv venv
 source venv/bin/activate
-```
 
-Install dependencies:
-
-```bash
 pip install -r requirements.txt
 pip install -e .
 ```
 
+## Syzygy Setup (3-4-5)
 
-## Syzygy Tablebase Setup (3-4-5 Pieces)
-
-Create directory:
+Create the directory:
 
 ```bash
 mkdir -p storage/syzygy/3_4_5
-cd storage/syzygy/3_4_5
 ```
 
-Download from:
+Download WDL + DTZ from:
 
 https://tablebase.lichess.ovh/tables/standard/
 
-Required folders:
-
+Folders:
 - 3-4-5-wdl
 - 3-4-5-dtz
 
-Place all `.rtbw` and `.rtbz` files into:
+Put all `.rtbw` and `.rtbz` directly into:
 
-```bash
+```
 storage/syzygy/3_4_5/
 ```
 
-These files are intentionally ignored by Git.
-
-
-## KPK Research Pipeline
-
-Run full pipeline:
+If using a URL list file (e.g. `downloads_3_4_5.txt`):
 
 ```bash
-export PYTHONPATH=$(pwd)/src
-
-python scripts/kpk/build_dataset.py
-python scripts/kpk/build_features.py
-python scripts/kpk/train_tree.py
-python scripts/kpk/print_kpk_tree.py
+wget -c -i downloads_3_4_5.txt -P storage/syzygy/3_4_5/
 ```
 
-Validate trained model:
+## KPK Pipeline
+
+### 1) Build dataset
+
+```bash
+python scripts/kpk/build_dataset.py
+```
+
+### 2) Build features
+
+```bash
+python scripts/kpk/build_features.py
+```
+
+Creates:
+
+```
+data/processed/kpk/features.csv
+```
+
+### 3) Train tree 
+
+```bash
+python scripts/kpk/train_tree.py
+```
+print
+
+```bash
+python scripts/kpk/print_kpk_tree.py
+```
+### 4) Validate trained model
 
 ```bash
 python scripts/kpk/validate.py
@@ -131,6 +138,12 @@ Output location:
 data/processed/kpk/
 ```
 
+## Notes
+
+- Paths are defined in `src/configs/paths.py`.
+- Optional overrides: `EGA_DATA` and `EGA_STORAGE`.
+- Always run scripts with the venv activated.
+- This project uses a src/ layout and requires pip install -e .
 
 ## KPK Baseline Results
 
