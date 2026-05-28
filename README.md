@@ -1,65 +1,69 @@
 # Endgame Abstractions
 
-A research framework for extracting human-interpretable geometric and
-algorithmic principles of perfect chess endgame play using tablebases
-and machine learning.
+Decision tree classifiers trained on geometric features to predict chess endgame
+WDL (Win/Draw/Loss) from Syzygy tablebases. No search — pure geometric pattern
+recognition.
 
-This project studies how optimal play emerges from spatial structure,
-with the goal of discovering minimal coordinate systems and symbolic
-rules underlying solved endgames.
+The central question: how much of chess endgame knowledge is recoverable from
+geometry alone, without search?
 
+## Results
 
-## Why This Project
+| Endgame | Positions | Depth | Leaves | Accuracy | Key finding |
+|---|---|---|---|---|---|
+| KRK | ~900K | 5 | 8 | 99.983% | 8 rules describe the entire endgame |
+| KBBK | 11.9M | 16 | 72 | 99.956% | Root split: `bishops_same_color` (insufficient material) |
+| KPK | ~331K | 16 | 548 | ~99.9% | Promotion explodes complexity 68× vs KRK |
+| KBNK | 24.5M | 24 | 770 | 99.540% | 50-move rule creates boundary geometry can't cross |
+| KNNK | 12.5M | 8 | 15 | 99.994% | 736 non-draws in 12.5M — theoretical draw recovered by ML |
 
-Modern chess engines are superhuman but opaque. Endgame tablebases
-provide perfect play, but their internal structure is largely
-uninterpretable. Human players, in contrast, reason using symbolic and
-geometric concepts.
+**Universal error pattern:** every misclassification in every endgame involves the
+DRAW boundary. Zero WIN↔LOSS errors. Geometry perfectly separates winning from
+losing positions; the draw boundary is what it cannot precisely specify.
 
-This project aims to bridge that gap by extracting interpretable
-structure from solved endgames.
+## Approach
 
+1. Enumerate all legal positions via Syzygy WDL probing
+2. Compute geometric features per position (distances, parity, coverage)
+3. Train `DecisionTreeClassifier(min_samples_leaf=50, max_depth=None)`
+4. Validate per-class accuracy; analyze misclassified positions
 
-## Research Goal
+Chess knowledge is not manually encoded. All abstractions are learned from data.
 
-To characterize perfect chess endgame value functions as
-low-dimensional, interpretable dynamical systems over discrete state space.
-
-The aim is to identify:
-
-- Invariants
-- Attractors
-- Symbolic laws
-- Minimal coordinate systems
-
-governing optimal play.
-
-
-## Overview
-
-This project reverse-engineers that structure by:
-
-- Enumerating solved positions
-- Extracting geometric features
-- Learning symbolic rules
-- Analyzing emergent concepts (opposition, zugzwang, triangulation, tempo)
-
-Starting with simple endgames (KPK), the framework incrementally scales
-to higher material.
-
+**Feature design highlights:**
+- `turn` dominates every endgame except KBBK (81.8% importance in KRK)
+- KBBK: `bishops_same_color` at 50.2% — material fact outweighs tempo
+- KBNK: `bk_in_wrong_corner` / `bk_near_wrong_corner` are zero importance — the tree uses raw distances, not named concepts
+- KPK: `e2_bk_p` (rule of the square) appears in top-5 features — a named chess heuristic recovered from data
+- KNNK: `nn_overlap` (squares both knights attack simultaneously) found without being told about coordination
 
 ## Repository Structure
 
-For detailed architectural layout and module organization, see:
+```
+scripts/{endgame}/
+    build_dataset.py    — enumerate positions, probe Syzygy WDL, save CSV
+    build_features.py   — extract geometric features, save features CSV
+    train_classifier.py — train DecisionTree, save model + tree.txt + metrics
+    validate.py         — accuracy per class, misclassified FEN positions
+    run_pipeline.sh     — runs all 4 steps in order
 
-docs/architecture.md
+scripts/analysis/
+    feature_importance.py  — cross-endgame feature ranking with chess-concept labels
 
+src/endgame/features/
+    krk_geom.py   kpk_geom.py   kbnk_geom.py   knnk_geom.py   kbbk_geom.py
+
+data/raw/{endgame}/full.csv            — gitignored, regenerate with build_dataset.py
+data/processed/{endgame}/features.csv — gitignored, regenerate with build_features.py
+logs/{endgame}_classifier/            — gitignored, contains model.joblib + tree.txt
+storage/syzygy/3_4_5/                 — gitignored, local Syzygy .rtbw files
+```
 
 ## Installation
 
 ```bash
-git clone <repository-url>
-cd endgame_abstractions
+git clone https://github.com/AkarshJD/endgame-abstractions.git
+cd endgame-abstractions
 
 python3 -m venv venv
 source venv/bin/activate
@@ -68,227 +72,56 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-## Syzygy Setup (3-4-5)
-
-Create the directory:
+## Syzygy Setup
 
 ```bash
 mkdir -p storage/syzygy/3_4_5
 ```
 
-Download WDL + DTZ from:
+Download 3-4-5 WDL files from [tablebase.lichess.ovh](https://tablebase.lichess.ovh/tables/standard/)
+and place all `.rtbw` files into `storage/syzygy/3_4_5/`.
 
-https://tablebase.lichess.ovh/tables/standard/
+Only WDL files (`.rtbw`) are needed — this project does not use DTZ.
 
-Folders:
-- 3-4-5-wdl
-- 3-4-5-dtz
-
-Put all `.rtbw` and `.rtbz` directly into:
-
-```
-storage/syzygy/3_4_5/
-```
-
-If using a URL list file (e.g. `downloads_3_4_5.txt`):
+## Running a Pipeline
 
 ```bash
-wget -c -i downloads_3_4_5.txt -P storage/syzygy/3_4_5/
+source venv/bin/activate
+bash scripts/{endgame}/run_pipeline.sh
 ```
 
-## KPK Pipeline
-
-### 1) Build dataset
+Or step by step:
 
 ```bash
-python scripts/kpk/build_dataset.py
+python scripts/{endgame}/build_dataset.py    # ~75 min for 4-piece (7 workers)
+python scripts/{endgame}/build_features.py   # ~5 min (parallelized, 2M sample)
+python scripts/{endgame}/train_classifier.py
+python scripts/{endgame}/validate.py
 ```
 
-### 2) Build features
+Replace `{endgame}` with `krk`, `kpk`, `kbnk`, `knnk`, or `kbbk`.
+
+## Analysis
 
 ```bash
-python scripts/kpk/build_features.py
+python scripts/analysis/feature_importance.py   # feature rankings across all endgames
+python scripts/kpk/compression_analysis.py      # compression ratio vs raw tablebase
 ```
 
-Creates:
+## Key Design Decisions
 
-```
-data/processed/kpk/features.csv
-```
-
-### 3) Train tree 
-
-```bash
-python scripts/kpk/train_tree.py
-```
-print
-
-```bash
-python scripts/kpk/print_kpk_tree.py
-```
-### 4) Validate trained model
-
-```bash
-python scripts/kpk/validate.py
-```
-
-Output location:
-
-```bash
-data/processed/kpk/
-```
-
-## Notes
-
-- Paths are defined in `src/configs/paths.py`.
-- Optional overrides: `EGA_DATA` and `EGA_STORAGE`.
-- Always run scripts with the venv activated.
-- This project uses a src/ layout and requires pip install -e .
-
-## KPK Baseline Results
-
-The KPK endgame (King + Pawn vs King) has been fully enumerated and
-labeled via Syzygy.
-
-Current symbolic model:
-
-- ~30 geometric features
-- Decision tree (max depth ≈ 19)
-- 1088 leaves
-- 331,352 legal positions
-- 99.9837% full-dataset accuracy
-- 54 boundary misclassifications
-
-Error cases are concentrated in structurally thin boundary regions
-(rook-pawn edge cases, opposition parity configurations, near-stalemate
-motifs).
-
-Preliminary analysis suggests significant geometric compression
-relative to naive entropy estimates of the WDL surface.
-
-This supports the working hypothesis that certain endgame value
-functions exhibit strong geometric regularity.
-
-
-## KPK Regression Experiments (DTZ)
-
-In addition to WDL classification, regression models are trained to
-predict DTZ (Distance to Zeroing move) for winning positions.
-
-Example:
-
-```bash
-python scripts/kpk/train_regression.py
-```
-
-Results indicate:
-
-- Strong compression within winning regimes
-- Different structural compressibility across win / loss / draw regions
-- Regime-dependent geometric structure
-
-
-## Position Analysis
-
-Analyze individual positions:
-
-```bash
-python src/endgame/kpk_analyzer.py
-```
-
-Edit the FEN string inside the script.
-
-
-## Research Methodology
-
-The project follows a bottom-up discovery approach:
-
-1. Exhaustive state enumeration
-2. Perfect-information labeling
-3. Feature construction
-4. Symbolic learning
-5. Rule compression
-6. Theoretical interpretation
-
-Chess knowledge is not manually encoded. All abstractions are learned
-from solved data.
-
-
-## Machine Learning Approach
-
-For each endgame:
-
-- State space is fully enumerated
-- Each position is labeled (WDL, DTZ)
-- Geometric features are computed
-- Decision trees and rule learners are trained
-- Learned rules are simplified and interpreted
-
-This yields compact symbolic approximations of perfect-play value functions.
-
-
-## Current Status
-
-### Implemented:
-
-- Syzygy integration
-- Modular per-endgame pipeline structure
-- KPK dataset generation
-- KPK WDL classification (99.98% full-dataset accuracy)
-- KPK DTZ regression experiments
-- KRK baseline modeling
-- Experiment logging and reproducibility framework
-- Misclassification boundary analysis
-- Compression estimation
-
-### In Progress:
-
-- KRK symbolic modeling
-- Feature ablation studies
-- Boundary manifold characterization
-- Generalization testing (KPPK, KRKP)
-
-### Planned:
-
-- KBNK, KQK
-- Multi-piece abstraction
-- Graph-theoretic modeling
-- Neuro-symbolic systems
-- Generative state models
-
-
-## License
-
-See LICENSE file.
-
-
-## Author
-
-Akarsh J D
-
-Status: Active Research
-
-
-## Citation and Status
-
-This project is an active research program and is currently in
-pre-publication stage.
-
-A formal citation will be provided after peer-reviewed or preprint
-publication.
-
-If you use this code in academic work prior to publication, please
-reference the repository URL and contact the author.
-
+- `min_samples_leaf=50` — forces rules that generalize to at least 50 positions;
+  prevents the tree from fitting the rare exceptions we study separately
+- `max_depth=None` — depth is a result (finding), not a constraint
+- Syzygy WDL only (no DTZ) — halves probe time, sufficient for classification
+- 2M position sample for 4-piece endgames — full 24.5M would OOM at 16GB
+- Symmetric pieces enumerated with `p1 < p2` to avoid duplicates
 
 ## Acknowledgments
 
-This project makes use of Syzygy endgame tablebases developed by Ronald
-de Man and distributed by Lichess.
+This project uses [Syzygy endgame tablebases](https://github.com/syzygy1/tb) by
+Ronald de Man, distributed by Lichess.
 
-Tablebases are obtained from:
+## Author
 
-https://tablebase.lichess.ovh/
-
-We thank the Lichess community for providing open access to high-quality
-endgame data for research purposes.
+Akarsh J D — Active Research
