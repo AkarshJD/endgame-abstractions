@@ -57,10 +57,19 @@ def main():
                     if dtz is None:
                         continue
 
+                    # Derive WDL from DTZ sign (relative to side to move)
+                    if dtz > 0:
+                        wdl = 2
+                    elif dtz < 0:
+                        wdl = -2
+                    else:
+                        wdl = 0
+
                     rows.append([
                         board.fen(),
                         int(turn == chess.WHITE),
-                        dtz
+                        dtz,
+                        wdl,
                     ])
 
     print("Total legal positions:", len(rows))
@@ -69,7 +78,7 @@ def main():
 
     with open(OUTPUT_PATH, "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["fen", "turn", "dtz"])
+        writer.writerow(["fen", "turn", "dtz", "wdl"])
         writer.writerows(rows)
 
     print("Done.")

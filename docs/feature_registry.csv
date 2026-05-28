@@ -38,7 +38,79 @@ f0038,box_rank_gap,separation,False,"WR,BK",projected_1D,abs(rank(rook) - rank(b
 f0039,box_file_gap,separation,False,"WR,BK",projected_1D,abs(file(rook) - file(bk)),File separation defining one dimension of the confinement box.,1
 f0040,box_area,area,False,"WR,BK",planar_geometry,box_rank_gap * box_file_gap,Area of the rook–king confinement rectangle.,2
 f0041,bk_on_edge,boundary_state,False,BK,board_topology,dist_to_edge(bk) == 0,Whether the Black King is on the board edge.,2
-f0042,bk_in_corner,boundary_state,False,BK,board_topology,"dist_to_edge(bk) == 0 AND file(bk) in {0,7} AND rank(bk) in {0,7}
-",Whether the Black King is in a corner square.,2
+f0042,bk_in_corner,boundary_state,False,BK,board_topology,"dist_to_edge(bk) == 0 AND file(bk) in {0,7} AND rank(bk) in {0,7}",Whether the Black King is in a corner square.,2
 f0043,rook_protected,coordination,False,"WK,WR",proximity,"chebyshev(wk, rook) == 1",Whether the rook is protected by the White King.,2
 f0044,bk_corner_distance,distance,False,BK,board_topology,min_distance_to_corner(bk),Chebyshev distance from Black King to nearest corner.,2
+
+f0045,rank_opposition_parity,parity,False,"WK,BK",rank_parity,"(rank_gap % 2 == 1) AND file_gap == 0","Kings on same file with odd separation (distant/direct opposition candidate).",2
+f0046,file_opposition_parity,parity,False,"WK,BK",file_parity,"(file_gap % 2 == 1) AND rank_gap == 0","Kings on same rank with odd separation.",2
+f0047,direct_opposition,structure,False,"WK,BK",linear_structure,"(chebyshev(wk,bk)==2) AND (rank_gap==0 OR file_gap==0)","Kings separated by one square on same rank or file.",2
+f0048,diagonal_opposition,structure,False,"WK,BK",diagonal_structure,"(abs(rank_gap)==abs(file_gap)) AND (chebyshev(wk,bk)>1) AND ((chebyshev(wk,bk)-1)%2==0)","Kings aligned diagonally with parity enabling future direct opposition.",2
+
+f0049,wk_controls_key_square,control,False,"WK,P",pawn_theory,"wk in key_squares(pawn)","White king occupies a key square relative to the pawn.",2
+f0050,bk_controls_promotion_square,control,False,"BK,P",pawn_theory,"bk in promotion_square_zone(pawn)","Black king controls or occupies promotion path square.",2
+f0051,corresponding_square_relation,structure,False,"WK,BK,P",zone_mapping,"is_corresponding_square(wk,bk,pawn)","Kings occupy corresponding critical squares.",2
+
+f0052,wk_forward_penetration,progress,False,"WK,P",directed_progress,"pawn_rank - rank(wk)","Signed forward penetration distance of White King relative to pawn.",1
+f0053,bk_blockade_zone,zone,False,"BK,P",blockade_geometry,"rank(bk) >= pawn_rank","Black king in front-of-pawn blockade zone.",2
+f0054,has_opposition_with_turn,state_structure,False,"WK,BK,STATE",temporal_structure,"(direct_opposition OR rank_opposition_parity OR file_opposition_parity) XOR turn","Side not to move holds structural opposition.",2
+
+f0055,wk_triangulation_potential,mobility_structure,False,"WK,BK",local_geometry,"king_mobility(wk)>=2 AND chebyshev(wk,bk)==2","White can triangulate to gain opposition.",1
+f0056,king_square_color_parity,parity,True,WK,board_topology,"(rank(wk)+file(wk))%2","Color parity of White king square.",1
+f0057,kings_same_color_parity,parity,False,"WK,BK",board_topology,"((rank(wk)+file(wk))%2)==((rank(bk)+file(bk))%2)","Kings lie on same color squares.",1
+
+f0058,outside_passed_pawn_potential,strategic_structure,False,"P,WK,BK",pawn_theory,"is_outside_passed(pawn,wk,bk)","Pawn can act as outside passer forcing king displacement.",2
+
+f0059,wk_triangle_mobility,mobility,False,WK,local_topology,"king_mobility(wk)>=3","White king mobility sufficient for triangulation loop.",1
+f0060,bk_triangle_mobility,mobility,False,BK,local_topology,"king_mobility(bk)>=3","Black king mobility sufficient for triangulation loop.",1
+f0061,wk_has_3cycle,move_graph,False,WK,king_graph,"exists_king_3cycle(wk)","White king has 3-move return cycle.",2
+f0062,bk_has_3cycle,move_graph,False,BK,king_graph,"exists_king_3cycle(bk)","Black king has 3-move return cycle.",2
+f0063,wk_spare_move_exists,tempo,False,"WK,BK,P",endgame_tempo,"exists_spare_king_move(wk,bk,pawn)","White has tempo-preserving spare king move.",2
+f0064,bk_spare_move_exists,tempo,False,"WK,BK,P",endgame_tempo,"exists_spare_king_move(bk,wk,pawn)","Black has tempo-preserving spare king move.",2
+f0065,wk_can_flip_opposition,tempo_strategy,False,"WK,BK,P,STATE",zugzwang_logic,"wk_has_3cycle AND opposition_reachable_after_3(wk,bk,pawn,turn)","White can triangulate to flip opposition.",2
+f0066,bk_can_flip_opposition,tempo_strategy,False,"WK,BK,P,STATE",zugzwang_logic,"bk_has_3cycle AND opposition_reachable_after_3(bk,wk,pawn,turn)","Black can triangulate to flip opposition.",2
+
+f0067,is_corresponding_pair,correspondence,False,"WK,BK,P",pawn_theory,"is_corresponding_square_pair(wk,bk,pawn)","Kings occupy corresponding-squares pairing.",2
+f0068,break_correspondence_in_3,tempo_strategy,False,"WK,BK,P,STATE",pawn_theory,"wk_has_3cycle AND can_break_correspondence(wk,bk,pawn,turn,3)","White can break correspondence lock via triangulation.",2
+f0069,push_gives_check,king_safety,False,"P,BK,STATE",tactical_geometry,"pawn_push_checks_king(pawn,bk,turn)","Pawn push gives check (often spoils opposition).",2
+f0070,pawn_push_is_only_spare,tempo,False,"WK,BK,P,STATE",endgame_tempo,"no_spare_king_move AND legal_pawn_push","Pawn push is only tempo attempt.",2
+
+f0071,wr_has_3cycle,move_graph,False,WR,rook_graph,"exists_rook_3cycle(rook)","Rook triangulation loop exists.",2
+f0072,wr_checking_cycle,move_graph,False,"WR,BK",tactical_geometry,"exists_rook_cycle_with_checks(rook,bk,3)","Rook 3-move checking cycle exists.",2
+
+f0073,side_to_move_in_trouble,zugzwang,False,"WK,BK,P,STATE",zugzwang_logic,"(turn==WHITE AND NOT wk_spare_move_exists) OR (turn==BLACK AND NOT bk_spare_move_exists)","Heuristic zugzwang indicator.",2
+f0074,wdl_turn_sensitivity,state_value,False,STATE,tablebase_logic,"wdl_white != wdl_black","Outcome depends on side to move (zugzwang).",2
+f0075,reciprocal_zugzwang,state_value,False,STATE,tablebase_logic,"wdl_white==LOSS AND wdl_black==LOSS","Mutual zugzwang.",2
+f0076,trebuchet,state_value,False,STATE,tablebase_logic,"reciprocal_zugzwang AND full_point_loss","Extreme mutual zugzwang (trébuchet).",2
+
+f0077,wk_worsening_moves_ratio,concession,False,"WK,BK,P,STATE",local_game_dynamics,"worsening_moves_white/total_moves_white","Fraction of White moves that worsen evaluation.",1
+f0078,bk_worsening_moves_ratio,concession,False,"WK,BK,P,STATE",local_game_dynamics,"worsening_moves_black/total_moves_black","Fraction of Black moves that worsen evaluation.",1
+f0079,move_degree_difference,mobility_structure,False,STATE,move_graph,"legal_moves_white - legal_moves_black","Legal move count difference.",1
+f0080,min_degree_side_to_move,mobility_structure,False,STATE,move_graph,"min_legal_moves(side_to_move)","Mobility floor of side to move.",1
+
+f0081,mined_square_violation,correspondence,False,"WK,BK,P",pawn_theory,"king_on_mined_square(wk,bk,pawn)","King steps into mined correspondence square.",2
+f0082,correspondence_lock_depth,correspondence,False,"WK,BK,P",pawn_theory,"distance_to_break_correspondence","Tempi required to escape correspondence pairing.",2
+f0083,null_move_improves,state_value,False,STATE,search_theory,"wdl_current < wdl_if_pass","Position improves if side could pass.",2
+f0084,endgame_requires_zugzwang,class,False,STATE,endgame_classification,"is_elementary_forcing_endgame(position)","Material class requires zugzwang to win.",2
+f0085,tempo_burden_symmetry,strategy,False,STATE,structural_symmetry,"is_structurally_symmetric(position) AND turn_disadvantage","Extra tempo is a burden (Zugzwang Lite).",2
+f0086,tempo_penetration_gradient,dynamics,False,"WK,BK,P,STATE",directed_progress,"penetration_score_next - penetration_score_current","Spatial gain/loss per forced tempo.",1
+
+f0087,wk_corr_group,correspondence,False,"WK,P",correspondence_partition,"corr_group_white(wk,pawn)","Correspondence group ID for White king square.",2
+f0088,bk_corr_group,correspondence,False,"BK,P",correspondence_partition,"corr_group_black(bk,pawn)","Correspondence group ID for Black king square.",2
+f0089,is_corresponding_square_pair,correspondence,False,"WK,BK,P",correspondence_partition,"wk_corr_group==bk_corr_group","Kings occupy same correspondence class.",2
+f0090,wk_corr_group_size,correspondence,False,"WK,P",correspondence_partition,"corr_group_size_white(wk,pawn)","Size of White correspondence class.",2
+f0091,bk_corr_group_size,correspondence,False,"BK,P",correspondence_partition,"corr_group_size_black(bk,pawn)","Size of Black correspondence class.",2
+f0092,corr_group_size_delta,correspondence,False,"WK,BK,P",correspondence_partition,"wk_corr_group_size-bk_corr_group_size","Asymmetry in correspondence maneuvering space.",2
+f0093,wk_next_corr_groups_count,correspondence,False,"WK,P",correspondence_dynamics,"count_unique(corr_group_white(nbr))","Distinct correspondence groups reachable next by White.",2
+f0094,bk_next_corr_groups_count,correspondence,False,"BK,P",correspondence_dynamics,"count_unique(corr_group_black(nbr))","Distinct correspondence groups reachable next by Black.",2
+f0095,wk_corr_threat_fanout,correspondence,False,"WK,BK,P,STATE",correspondence_dynamics,"turn==WHITE?wk_next_corr_groups_count:bk_next_corr_groups_count","Threat fan-out in correspondence space.",2
+f0096,wk_on_mined_square,correspondence,False,"WK,P",correspondence_partition,"wk_corr_group_size==1","White on mined-square class.",2
+f0097,bk_on_mined_square,correspondence,False,"BK,P",correspondence_partition,"bk_corr_group_size==1","Black on mined-square class.",2
+f0098,mined_square_contact,correspondence,False,"WK,BK,P",correspondence_partition,"wk_on_mined_square AND is_corresponding_square_pair","Mutual mined-square contact.",2
+
+f0099,wk_dist_to_nearest_key,goal_distance,False,"WK,P",pawn_theory,"min_distance_to_key_square(wk,pawn)","Distance from White king to nearest key square.",2
+f0100,bk_dist_to_key_defense,goal_distance,False,"BK,P",pawn_theory,"min_distance_to_defensive_key(bk,pawn)","Distance from Black king to defensive key squares.",2
+f0101,key_squares_spread,goal_geometry,False,P,pawn_theory,"graph_diameter(key_squares(pawn))","Spread of pawn key squares.",2
+f0102,bk_can_reply_to_wk_corr,correspondence,False,"WK,BK,P,STATE",correspondence_dynamics,"exists_corr_reply(bk,wk,pawn,turn)","Defender can reach required correspondence reply.",2
+f0103,local_corr_reply_exists,correspondence,False,"WK,BK,P,STATE",correspondence_dynamics,"exists_local_corr_reply","Local existence of correspondence reply.",1
+f0104,corr_pressure,correspondence,False,"WK,BK,P,STATE",correspondence_score,"corr_fanout_difference","Side-to-move advantage in correspondence maneuvering space.",2

@@ -98,4 +98,46 @@ def compute_krk_features(board):
     # --- Turn ---
     features["turn"] = int(board.turn == chess.WHITE)
 
+    # --- Rank / file coordinates (signed offsets) ---
+    features["wk_rank"] = chess.square_rank(wk)
+    features["wk_file"] = chess.square_file(wk)
+    features["bk_rank"] = chess.square_rank(bk)
+    features["bk_file"] = chess.square_file(bk)
+    features["rook_rank"] = chess.square_rank(rook)
+    features["rook_file"] = chess.square_file(rook)
+
+    features["wk_bk_rank_diff"] = chess.square_rank(wk) - chess.square_rank(bk)
+    features["wk_bk_file_diff"] = chess.square_file(wk) - chess.square_file(bk)
+
+    # --- Parity (critical for triangulation / corresponding squares) ---
+    wk_color = (chess.square_file(wk) + chess.square_rank(wk)) % 2
+    bk_color = (chess.square_file(bk) + chess.square_rank(bk)) % 2
+    rook_color = (chess.square_file(rook) + chess.square_rank(rook)) % 2
+
+    features["wk_square_color"] = wk_color
+    features["bk_square_color"] = bk_color
+    features["kings_same_color"] = int(wk_color == bk_color)
+    features["wk_file_parity"] = chess.square_file(wk) % 2
+    features["bk_file_parity"] = chess.square_file(bk) % 2
+    features["wk_rank_parity"] = chess.square_rank(wk) % 2
+    features["bk_rank_parity"] = chess.square_rank(bk) % 2
+    features["rook_file_parity"] = chess.square_file(rook) % 2
+    features["rook_rank_parity"] = chess.square_rank(rook) % 2
+
+    # --- Confinement box absolute positions ---
+    rr, rf = chess.square_rank(rook), chess.square_file(rook)
+    br, bf = chess.square_rank(bk), chess.square_file(bk)
+    features["bk_above_rook"] = int(br > rr)
+    features["bk_right_of_rook"] = int(bf > rf)
+
+    # --- Manhattan distances ---
+    features["m_wk_bk"] = (
+        abs(chess.square_file(wk) - chess.square_file(bk)) +
+        abs(chess.square_rank(wk) - chess.square_rank(bk))
+    )
+    features["m_wr_bk"] = (
+        abs(chess.square_file(rook) - chess.square_file(bk)) +
+        abs(chess.square_rank(rook) - chess.square_rank(bk))
+    )
+
     return features

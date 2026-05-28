@@ -28,6 +28,13 @@ def main():
 
         features["dtz"] = row["dtz"]
 
+        # WDL: from raw data if present, otherwise derived from DTZ sign
+        if "wdl" in df.columns:
+            features["wdl"] = row["wdl"]
+        else:
+            dtz = row["dtz"]
+            features["wdl"] = 2 if dtz > 0 else (-2 if dtz < 0 else 0)
+
         rows.append(features)
 
     feature_df = pd.DataFrame(rows)
