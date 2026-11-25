@@ -172,8 +172,8 @@ storage/syzygy/3_4_5/                 — gitignored, local Syzygy .rtbw files
 ## Installation
 
 ```bash
-git clone https://github.com/AkarshJD/endgame_abstractions.git
-cd endgame_abstractions
+git clone https://github.com/AkarshJD/endgame-abstractions.git
+cd endgame-abstractions
 
 python3 -m venv venv
 source venv/bin/activate
