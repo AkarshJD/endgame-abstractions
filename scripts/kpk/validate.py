@@ -1,15 +1,30 @@
-import pandas as pd
+import json
+from pathlib import Path
+
 import joblib
+import pandas as pd
 
 from endgame.utils.logger import make_run_dir, save_json
 
 
-MODEL_PATH = "logs/kpk/2026-02-10_21-55-59/model.joblib"
+MODEL_BASE = "logs/kpk_classifier"  # written by scripts/kpk/train_classifier.py
 FEATURE_PATH = "data/processed/kpk/features.csv"
 FULL_PATH = "data/processed/kpk/full.csv"
+N_PRINT = 20  # misclassified FENs to print; all are saved to the run directory
+
+
+def find_latest_model(base=MODEL_BASE):
+    runs = sorted(Path(base).glob("*/model.joblib"))
+    if not runs:
+        raise FileNotFoundError(f"No model.joblib under {base}; run scripts/kpk/train_classifier.py first")
+    return runs[-1]
 
 
 def main():
+
+    model_path = find_latest_model()
+    print(f"Model: {model_path}")
+    feature_cols = json.loads((model_path.parent / "meta.json").read_text())["features"]
 
     print("Loading features...")
     features_df = pd.read_csv(FEATURE_PATH)
@@ -17,11 +32,11 @@ def main():
     print("Loading full dataset (with FEN)...")
     full_df = pd.read_csv(FULL_PATH)
 
-    X = features_df.drop(columns=["wdl"])
+    X = features_df.reindex(columns=feature_cols)
     y_true = features_df["wdl"]
 
     print("Loading model...")
-    model = joblib.load(MODEL_PATH)
+    model = joblib.load(model_path)
 
     print("Predicting full dataset...")
     y_pred = model.predict(X)
@@ -43,20 +58,17 @@ def main():
     # PRINT MISCLASSIFIED FENS
     # ============================================================
 
-    print("\n===== MISCLASSIFIED FEN POSITIONS =====\n")
+    print(f"\n===== MISCLASSIFIED FEN POSITIONS (first {N_PRINT}) =====\n")
 
     fens = []
 
-    for idx in misclassified_idx:
+    for i, idx in enumerate(misclassified_idx):
         fen = full_df.loc[idx, "fen"]
-        true_label = full_df.loc[idx, "wdl"]
-        pred_label = features_df.loc[idx, "prediction"]
-
         fens.append(fen)
-
-        print(f"FEN: {fen}")
-        print(f"True: {true_label} | Predicted: {pred_label}")
-        print("-" * 60)
+        if i < N_PRINT:
+            print(f"FEN: {fen}")
+            print(f"True: {full_df.loc[idx, 'wdl']} | Predicted: {features_df.loc[idx, 'prediction']}")
+            print("-" * 60)
 
     # ============================================================
     # SAVE RESULTS

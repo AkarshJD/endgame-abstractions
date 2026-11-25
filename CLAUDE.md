@@ -9,14 +9,14 @@ Decision tree classifiers trained on geometric features to predict chess endgame
 |---|---|---|---|---|---|---|
 | KRK | 399K | 5 | 8 | 99.98% | 94.43% | Every White-to-move position is a win |
 | KBBK | 11.9M | 16 | 72 | 99.95% | 55.26% | Root = `bishops_same_color` (insufficient material) |
-| KPK | 331K | 16 | 548 | 98.25% | 67.17% | 68× the leaves of KRK |
+| KPK | 331K | 15 | 538 | 98.01% | 67.17% | 93.96% on held-out a/b files, mostly from features that are not left-right symmetric |
 | KBNK | 24.5M | 24 | 770 | 99.51% | 89.70% | 50-move rule ruled out as the cause of errors |
 | KNNK | 12.6M | 8 | 15 | 99.99% | 99.99% | Tree predicts draw everywhere; no result yet |
 
-Test accuracy is on the held-out split; KBBK, KBNK and KNNK use a 2M sample.
-Zero Win↔Loss errors follows from the labels (WDL is from the side to move and
-the lone king never wins), not from geometry. KPK features store `turn` as 1 / NaN
-instead of 1 / 0.
+Test accuracy is on a random 20% split from each `train_classifier.py`; KBBK,
+KBNK and KNNK use a 2M sample. Zero Win↔Loss errors follows from the labels (WDL
+is from the side to move and the lone king never wins), not from geometry.
+Only KNNK and KBBK have `run_pipeline.sh`.
 
 ## Stack
 
@@ -33,7 +33,7 @@ scripts/{endgame}/
     build_features.py  — extract geometric features, save features CSV
     train_classifier.py — train DecisionTree, save model + tree.txt + metrics
     validate.py        — accuracy per class, misclassified FEN positions
-    run_pipeline.sh    — runs all 4 steps in order
+    run_pipeline.sh    — runs all 4 steps in order (KNNK and KBBK only)
 
 src/endgame/features/
     krk_geom.py        — KRK geometric features

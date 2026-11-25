@@ -59,14 +59,16 @@ model. Two properties make it worth stating rather than asserting:
 |---|---|---|---|---|---|
 | KRK  | 399K   | 5  | 8   | 99.98% | 94.43% |
 | KBBK | 11.9M† | 16 | 72  | 99.95% | 55.26% |
-| KPK  | 331K   | 16 | 548 | 98.25% | 67.17% |
+| KPK  | 331K   | 15 | 538 | 98.01% | 67.17% |
 | KBNK | 24.5M† | 24 | 770 | 99.51% | 89.70% |
 | KNNK | 12.6M† | 8  | 15  | 99.99% | 99.99% |
 
-- *Test accuracy* is on the held-out split from `train_classifier.py`. Earlier
+- *Test accuracy* is on a random 20% held-out split from each endgame's
+  `train_classifier.py` (same split and tree settings for all five). Earlier
   versions of this table used `validate.py`, which scores every position,
-  including the ones the tree was trained on; the earlier KPK figure (~99.9%)
-  also came from an older tree grown with no leaf-size limit.
+  including the ones the tree was trained on. The earlier KPK figure (~99.9%)
+  came from a tree with no leaf-size limit (1,088 leaves, 99.92% on its own
+  held-out split), not from the 548-leaf tree it was listed with.
 - *Side to move only* is the accuracy of predicting the most common result for
   each side to move, ignoring the board. The gap between the two columns is what
   the geometric features add.
@@ -85,7 +87,11 @@ Per-endgame notes:
 - **KBBK** — root split is `bishops_same_color`, a material fact (same-colored
   bishops cannot force mate) outweighing tempo. Reassuring that the tree's primary
   split is structurally correct.
-- **KPK** — 548 leaves, about 68× more than KRK. An engineered
+- **KPK** — 538 leaves, about 67× more than KRK. Holding out every a- and
+  b-file pawn instead (train on files c–h) gives 93.96%. Those positions mirror
+  g- and h-file ones the tree did train on, so most of the drop comes from
+  features that are not left-right symmetric (such as `pawn_file`): in a one-off
+  check, dropping the five of them gives 97.71%. An engineered
   `e2_bk_p` feature (rule of the square) ranks in the top 5. The tree *uses* it; this
   is **not** evidence the rule of the square emerges from board geometry, only that a
   feature already encoding it is discriminative.
@@ -138,11 +144,6 @@ These are stated as open, not as findings:
    endgames, or a general property of geometric WDL separability? This needs more and
    larger endgames before any general claim is made.
 
-## Known issues
-
-- The current KPK feature file stores `turn` as 1 for White to move and leaves it
-  empty (NaN) for Black to move. The other endgames use 1 and 0.
-
 ## Repository Structure
 
 ```
@@ -151,7 +152,7 @@ scripts/{endgame}/
     build_features.py   — extract geometric features, save features CSV
     train_classifier.py — train DecisionTree, save model + tree.txt + metrics
     validate.py         — per-class recall, confusion matrix, misclassified FENs
-    run_pipeline.sh     — runs all 4 steps in order
+    run_pipeline.sh     — runs all 4 steps in order (KNNK and KBBK only)
 
 scripts/analysis/
     feature_importance.py  — cross-endgame feature ranking with chess-concept labels
@@ -210,7 +211,8 @@ python scripts/{endgame}/train_classifier.py
 python scripts/{endgame}/validate.py
 ```
 
-Replace `{endgame}` with `krk`, `kpk`, `kbnk`, `knnk`, or `kbbk`.
+Replace `{endgame}` with `krk`, `kpk`, `kbnk`, `knnk`, or `kbbk`. Only `knnk`
+and `kbbk` have `run_pipeline.sh`; for the others, run the four steps directly.
 
 ## Analysis
 
