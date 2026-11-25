@@ -5,15 +5,18 @@ Decision tree classifiers trained on geometric features to predict chess endgame
 
 ## Results so far
 
-| Endgame | Positions | Depth | Leaves | Accuracy | Key finding |
-|---|---|---|---|---|---|
-| KRK | ~900K | 5 | 8 | 99.983% | 8 rules describe entire endgame |
-| KBBK | 11.9M | 16 | 72 | 99.956% | Root = `bishops_same_color` (insufficient material) |
-| KPK | ~331K | 16 | 548 | ~99.9% | Promotion explodes complexity 68× vs KRK |
-| KBNK | 24.5M | 24 | 770 | 99.540% | 50-move rule creates boundary geometry can't cross |
-| KNNK | 12.5M | 8 | 15 | 99.994% | 736 non-draws in 12.5M — theoretical draw proven by ML |
+| Endgame | Positions | Depth | Leaves | Test accuracy | Side to move only | Note |
+|---|---|---|---|---|---|---|
+| KRK | 399K | 5 | 8 | 99.98% | 94.43% | Every White-to-move position is a win |
+| KBBK | 11.9M | 16 | 72 | 99.95% | 55.26% | Root = `bishops_same_color` (insufficient material) |
+| KPK | 331K | 16 | 548 | 98.25% | 67.17% | 68× the leaves of KRK |
+| KBNK | 24.5M | 24 | 770 | 99.51% | 89.70% | 50-move rule ruled out as the cause of errors |
+| KNNK | 12.6M | 8 | 15 | 99.99% | 99.99% | Tree predicts draw everywhere; no result yet |
 
-All misclassifications in every endgame involve the DRAW class. Zero WIN↔LOSS errors.
+Test accuracy is on the held-out split; KBBK, KBNK and KNNK use a 2M sample.
+Zero Win↔Loss errors follows from the labels (WDL is from the side to move and
+the lone king never wins), not from geometry. KPK features store `turn` as 1 / NaN
+instead of 1 / 0.
 
 ## Stack
 
