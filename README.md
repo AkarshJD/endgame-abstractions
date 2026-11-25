@@ -159,6 +159,10 @@ scripts/analysis/
 src/endgame/features/
     krk_geom.py   kpk_geom.py   kbnk_geom.py   knnk_geom.py   kbbk_geom.py
 
+src/endgame/retro/      — exact K+X vs K solver for other board sizes and king moves
+scripts/retro/          — solve tables, check them against Syzygy and a second solver
+                          (see scripts/retro/README.md)
+
 data/raw/{endgame}/full.csv            — gitignored, regenerate with build_dataset.py
 data/processed/{endgame}/features.csv — gitignored, regenerate with build_features.py
 logs/{endgame}_classifier/            — gitignored, contains model.joblib + tree.txt
