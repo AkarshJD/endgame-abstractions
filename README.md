@@ -21,9 +21,14 @@ Precise version of the question:
 The proposition the experiments are set up to test — and, where possible, to
 falsify — is:
 
-> In each endgame studied, WDL is cleanly separable by a decision tree over
-> geometric features **except on the draw boundary**. Win and Loss are never
-> confused; all residual error concentrates on Draw-adjacent positions.
+> In each endgame studied, a decision tree over geometric features separates
+> decisive positions from draws almost perfectly, and the remaining errors sit on
+> the draw boundary.
+
+Win vs Loss is not part of the claim. Syzygy WDL is scored from the side to move,
+and the lone king can never win, so in all five datasets every win has White to
+move and every loss has Black to move. Any tree that splits on side to move
+cannot confuse the two.
 
 This is a claim about the geometry of the problem, not about the strength of the
 model. Two properties make it worth stating rather than asserting:
@@ -50,35 +55,37 @@ model. Two properties make it worth stating rather than asserting:
 
 ## Results
 
-| Endgame | Positions | Depth | Leaves | Accuracy\* |
-|---|---|---|---|---|
-| KRK  | ~900K | 5  | 8   | 99.983% |
-| KBBK | 11.9M | 16 | 72  | 99.956% |
-| KPK  | ~331K | 16 | 548 | ~99.9%  |
-| KBNK | 24.5M | 24 | 770 | 99.540% |
-| KNNK | 12.5M | 8  | 15  | 99.994% |
+| Endgame | Positions | Depth | Leaves | Test accuracy | Side to move only |
+|---|---|---|---|---|---|
+| KRK  | 399K   | 5  | 8   | 99.98% | 94.43% |
+| KBBK | 11.9M† | 16 | 72  | 99.95% | 55.26% |
+| KPK  | 331K   | 16 | 548 | 98.25% | 67.17% |
+| KBNK | 24.5M† | 24 | 770 | 99.51% | 89.70% |
+| KNNK | 12.6M† | 8  | 15  | 99.99% | 99.99% |
 
-\* **Accuracy is reported for continuity with prior work, not as the result.** It is
-dominated by the draw-majority base rate and should be read with suspicion. For
-KNNK, 736 non-draws in 12.5M means a constant "draw" predictor already scores
-~99.99%; accuracy there carries almost no information. The meaningful metrics are
-per-class recall and the full confusion matrix, emitted by `validate.py`.
+- *Test accuracy* is on the held-out split from `train_classifier.py`. Earlier
+  versions of this table used `validate.py`, which scores every position,
+  including the ones the tree was trained on; the earlier KPK figure (~99.9%)
+  also came from an older tree grown with no leaf-size limit.
+- *Side to move only* is the accuracy of predicting the most common result for
+  each side to move, ignoring the board. The gap between the two columns is what
+  the geometric features add.
+- † Trained and evaluated on a 2M-position sample.
 
-**The actual finding (read from the confusion matrices, not the accuracy column):**
-across all five endgames, there are **zero Win↔Loss errors**. Every residual
-misclassification is Draw-adjacent. Geometry separates winning from losing positions
-cleanly; what it cannot precisely place is the draw boundary. The strength of this
-finding is its *structure* (a class of error that never occurs), which aggregate
-accuracy hides.
+Accuracy is dominated by base rates and should be read with the per-class recall
+and confusion matrix from `validate.py`. There are zero Win↔Loss errors in all
+five endgames, but as explained above this follows from the labels, not from
+geometry.
 
-Per-endgame notes, stated conservatively:
+Per-endgame notes:
 
-- **KRK** — 8 leaves reproduce the entire endgame. A small, legible rule set; the
-  least surprising case and a good sanity check.
+- **KRK** — 8 leaves reach 99.98% on held-out positions. Every White-to-move
+  position in the dataset is a win, so the tree's real job is telling
+  Black-to-move losses from draws.
 - **KBBK** — root split is `bishops_same_color`, a material fact (same-colored
   bishops cannot force mate) outweighing tempo. Reassuring that the tree's primary
   split is structurally correct.
-- **KPK** — promotion raises leaf count ~68× over KRK. An engineered
+- **KPK** — 548 leaves, about 68× more than KRK. An engineered
   `e2_bk_p` feature (rule of the square) ranks in the top 5. The tree *uses* it; this
   is **not** evidence the rule of the square emerges from board geometry, only that a
   feature already encoding it is discriminative.
@@ -86,9 +93,9 @@ Per-endgame notes, stated conservatively:
   zero importance; the tree relies on raw distances instead. A case where a
   human-named concept was *not* what the tree found useful, which is worth reporting
   honestly rather than hiding.
-- **KNNK** — KNN vs K is a theoretical draw; the 736 non-draws are recovered. An
-  engineered `nn_overlap` feature (squares both knights attack) is discriminative.
-  Same caveat as KPK: supplied, not discovered.
+- **KNNK** — KNN vs K is a theoretical draw: 736 of the 12.6M positions are not
+  draws. The tree predicts a draw for every held-out position (0 of 36 non-draws
+  correct), so its accuracy is just the base rate. There is no KNNK result yet.
 
 ## Approach
 
@@ -117,8 +124,8 @@ treated as leakage and excluded.
 
 These are stated as open, not as findings:
 
-1. **Draw-boundary mechanism.** W↔L is never confused; what governs the width and
-   shape of the draw boundary that geometry cannot cross? The 50-move rule was tested
+1. **Draw-boundary mechanism.** What governs the width and shape of the draw
+   boundary that the geometric features cannot place exactly? The 50-move rule was tested
    and rejected for KBNK. Candidate correlates still to test: tempo/opposition
    parity, distance to zugzwang, and reachability of a decisive capture or promotion
    within the relevant horizon.
@@ -130,6 +137,11 @@ These are stated as open, not as findings:
 3. **Portability.** Is "all error is draw-adjacent" a property of these specific small
    endgames, or a general property of geometric WDL separability? This needs more and
    larger endgames before any general claim is made.
+
+## Known issues
+
+- The current KPK feature file stores `turn` as 1 for White to move and leaves it
+  empty (NaN) for Black to move. The other endgames use 1 and 0.
 
 ## Repository Structure
 
@@ -146,6 +158,10 @@ scripts/analysis/
 
 src/endgame/features/
     krk_geom.py   kpk_geom.py   kbnk_geom.py   knnk_geom.py   kbbk_geom.py
+
+src/endgame/retro/      — exact K+X vs K solver for other board sizes and king moves
+scripts/retro/          — solve tables, check them against Syzygy and a second solver
+                          (see scripts/retro/README.md)
 
 data/raw/{endgame}/full.csv            — gitignored, regenerate with build_dataset.py
 data/processed/{endgame}/features.csv — gitignored, regenerate with build_features.py
