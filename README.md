@@ -49,7 +49,7 @@ model. Two properties make it worth stating rather than asserting:
   geometry is missing. The boundary remains unexplained in general. This is the main
   open question, not a settled result.
 - It does **not** claim chess concepts *emerge* from raw board state. Where a named
-  concept (e.g. the rule of the square) shows up, it shows up because a feature
+  concept (e.g. key squares in KPK) shows up, it shows up because a feature
   encoding that concept was supplied. Whether comparable structure would arise from
   primitive features alone is untested (see *Open questions*).
 
@@ -91,10 +91,14 @@ Per-endgame notes:
   b-file pawn instead (train on files c–h) gives 93.96%. Those positions mirror
   g- and h-file ones the tree did train on, so most of the drop comes from
   features that are not left-right symmetric (such as `pawn_file`): in a one-off
-  check, dropping the five of them gives 97.71%. An engineered
-  `e2_bk_p` feature (rule of the square) ranks in the top 5. The tree *uses* it; this
-  is **not** evidence the rule of the square emerges from board geometry, only that a
-  feature already encoding it is discriminative.
+  check, dropping the five of them gives 97.71%. The engineered
+  `wk_dist_to_nearest_key` feature (White king's distance to the nearest key square,
+  approximated as the squares two ranks ahead of the pawn) ranks fifth. The tree
+  *uses* it; this is **not** evidence that key squares emerge from board geometry,
+  only that a feature already encoding them is discriminative. Earlier versions of
+  this note described `e2_bk_p` (ranked fourth) as the rule of the square. It is the
+  squared distance between the Black king and the pawn; no KPK feature encodes the
+  rule of the square.
 - **KBNK** — the named `bk_in_wrong_corner` / `bk_near_wrong_corner` features carry
   zero importance; the tree relies on raw distances instead. A case where a
   human-named concept was *not* what the tree found useful, which is worth reporting
@@ -135,7 +139,7 @@ These are stated as open, not as findings:
    and rejected for KBNK. Candidate correlates still to test: tempo/opposition
    parity, distance to zugzwang, and reachability of a decisive capture or promotion
    within the relevant horizon.
-2. **Concept emergence vs. concept supply.** Do named heuristics (rule of the square,
+2. **Concept emergence vs. concept supply.** Do named heuristics (key squares,
    knight coordination) reappear in the split structure when *only* primitive
    features — raw coordinates, parity, side-to-move — are provided? If yes,
    "recovered from data" becomes an earned claim. If no, the concept is doing work

@@ -41,8 +41,8 @@ CHESS_CONCEPTS = {
     "bk_p_df":                   "BK–pawn file difference (signed)",
     "file_gap":                  "file distance between kings and pawn",
     "wk_dist_to_nearest_key":    "WK distance from pawn's key squares",
-    "e2_bk_p":                   "BK inside pawn square (rule of the square)",
-    "e2_wk_p":                   "WK inside pawn square",
+    "e2_bk_p":                   "BK–pawn squared Euclidean distance",
+    "e2_wk_p":                   "WK–pawn squared Euclidean distance",
     # KBNK corner geometry
     "bishop_color":              "bishop square color",
     "bk_to_correct_corner":      "BK dist from correct-color corner",
