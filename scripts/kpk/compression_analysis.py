@@ -24,7 +24,7 @@ from endgame.utils.logger import make_run_dir, save_json
 
 
 SYZYGY_PATH = "storage/syzygy/3_4_5"
-MODEL_BASE = "logs/kpk"
+MODEL_BASE = "logs/kpk_classifier"
 FEATURES_PATH = "data/processed/kpk/features.csv"
 
 

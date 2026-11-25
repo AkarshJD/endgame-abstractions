@@ -19,7 +19,7 @@ from endgame.features.kpk_geom import extract_kpk_features
 from endgame.utils.logger import make_run_dir, save_json
 
 
-def find_latest_model(base="logs/kpk"):
+def find_latest_model(base="logs/kpk_classifier"):
     runs = sorted(Path(base).glob("*/model.joblib"))
     if not runs:
         raise FileNotFoundError(f"No model.joblib found under {base}")

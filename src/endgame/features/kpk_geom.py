@@ -123,39 +123,6 @@ def legal_move_count_for_turn(board: chess.Board, turn: bool):
     return sum(1 for _ in b.legal_moves)
 
 
-def _keep_nonzero(d):
-    """
-    Keep only:
-      - ints/floats != 0
-      - bool True
-      - strings non-empty
-      - everything else that isn't None
-    """
-    out = {}
-    for k, v in d.items():
-        if v is None:
-            continue
-        if isinstance(v, bool):
-            if v:
-                out[k] = int(v)
-            continue
-        if isinstance(v, (int, float)):
-            if v != 0:
-                out[k] = v
-            continue
-        if isinstance(v, str):
-            if v.strip():
-                out[k] = v
-            continue
-        # fallback: keep non-empty containers or any other object
-        try:
-            if len(v) > 0:
-                out[k] = v
-        except Exception:
-            out[k] = v
-    return out
-
-
 # ---------- Feature extraction ----------
 
 def extract_kpk_features(board: chess.Board):
@@ -285,4 +252,6 @@ def extract_kpk_features(board: chess.Board):
     # Optional: keep distance-to-nearest key square (often nonzero)
     features["wk_dist_to_nearest_key"] = min(chebyshev(wk, s) for s in ks) if ks else 0
 
-    return _keep_nonzero(features)
+    # Every feature is returned, zeros included. (Zero-valued features used to
+    # be dropped here, which turned them into NaN in features.csv.)
+    return features

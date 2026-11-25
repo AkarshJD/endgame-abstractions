@@ -49,7 +49,7 @@ model. Two properties make it worth stating rather than asserting:
   geometry is missing. The boundary remains unexplained in general. This is the main
   open question, not a settled result.
 - It does **not** claim chess concepts *emerge* from raw board state. Where a named
-  concept (e.g. the rule of the square) shows up, it shows up because a feature
+  concept (e.g. key squares in KPK) shows up, it shows up because a feature
   encoding that concept was supplied. Whether comparable structure would arise from
   primitive features alone is untested (see *Open questions*).
 
@@ -59,14 +59,16 @@ model. Two properties make it worth stating rather than asserting:
 |---|---|---|---|---|---|
 | KRK  | 399K   | 5  | 8   | 99.98% | 94.43% |
 | KBBK | 11.9M† | 16 | 72  | 99.95% | 55.26% |
-| KPK  | 331K   | 16 | 548 | 98.25% | 67.17% |
+| KPK  | 331K   | 15 | 538 | 98.01% | 67.17% |
 | KBNK | 24.5M† | 24 | 770 | 99.51% | 89.70% |
 | KNNK | 12.6M† | 8  | 15  | 99.99% | 99.99% |
 
-- *Test accuracy* is on the held-out split from `train_classifier.py`. Earlier
+- *Test accuracy* is on a random 20% held-out split from each endgame's
+  `train_classifier.py` (same split and tree settings for all five). Earlier
   versions of this table used `validate.py`, which scores every position,
-  including the ones the tree was trained on; the earlier KPK figure (~99.9%)
-  also came from an older tree grown with no leaf-size limit.
+  including the ones the tree was trained on. The earlier KPK figure (~99.9%)
+  came from a tree with no leaf-size limit (1,088 leaves, 99.92% on its own
+  held-out split), not from the 548-leaf tree it was listed with.
 - *Side to move only* is the accuracy of predicting the most common result for
   each side to move, ignoring the board. The gap between the two columns is what
   the geometric features add.
@@ -85,10 +87,18 @@ Per-endgame notes:
 - **KBBK** — root split is `bishops_same_color`, a material fact (same-colored
   bishops cannot force mate) outweighing tempo. Reassuring that the tree's primary
   split is structurally correct.
-- **KPK** — 548 leaves, about 68× more than KRK. An engineered
-  `e2_bk_p` feature (rule of the square) ranks in the top 5. The tree *uses* it; this
-  is **not** evidence the rule of the square emerges from board geometry, only that a
-  feature already encoding it is discriminative.
+- **KPK** — 538 leaves, about 67× more than KRK. Holding out every a- and
+  b-file pawn instead (train on files c–h) gives 93.96%. Those positions mirror
+  g- and h-file ones the tree did train on, so most of the drop comes from
+  features that are not left-right symmetric (such as `pawn_file`): in a one-off
+  check, dropping the five of them gives 97.71%. The engineered
+  `wk_dist_to_nearest_key` feature (White king's distance to the nearest key square,
+  approximated as the squares two ranks ahead of the pawn) ranks fifth. The tree
+  *uses* it; this is **not** evidence that key squares emerge from board geometry,
+  only that a feature already encoding them is discriminative. Earlier versions of
+  this note described `e2_bk_p` (ranked fourth) as the rule of the square. It is the
+  squared distance between the Black king and the pawn; no KPK feature encodes the
+  rule of the square.
 - **KBNK** — the named `bk_in_wrong_corner` / `bk_near_wrong_corner` features carry
   zero importance; the tree relies on raw distances instead. A case where a
   human-named concept was *not* what the tree found useful, which is worth reporting
@@ -129,7 +139,7 @@ These are stated as open, not as findings:
    and rejected for KBNK. Candidate correlates still to test: tempo/opposition
    parity, distance to zugzwang, and reachability of a decisive capture or promotion
    within the relevant horizon.
-2. **Concept emergence vs. concept supply.** Do named heuristics (rule of the square,
+2. **Concept emergence vs. concept supply.** Do named heuristics (key squares,
    knight coordination) reappear in the split structure when *only* primitive
    features — raw coordinates, parity, side-to-move — are provided? If yes,
    "recovered from data" becomes an earned claim. If no, the concept is doing work
@@ -137,11 +147,6 @@ These are stated as open, not as findings:
 3. **Portability.** Is "all error is draw-adjacent" a property of these specific small
    endgames, or a general property of geometric WDL separability? This needs more and
    larger endgames before any general claim is made.
-
-## Known issues
-
-- The current KPK feature file stores `turn` as 1 for White to move and leaves it
-  empty (NaN) for Black to move. The other endgames use 1 and 0.
 
 ## Repository Structure
 
@@ -151,7 +156,7 @@ scripts/{endgame}/
     build_features.py   — extract geometric features, save features CSV
     train_classifier.py — train DecisionTree, save model + tree.txt + metrics
     validate.py         — per-class recall, confusion matrix, misclassified FENs
-    run_pipeline.sh     — runs all 4 steps in order
+    run_pipeline.sh     — runs all 4 steps in order (KNNK and KBBK only)
 
 scripts/analysis/
     feature_importance.py  — cross-endgame feature ranking with chess-concept labels
@@ -210,7 +215,8 @@ python scripts/{endgame}/train_classifier.py
 python scripts/{endgame}/validate.py
 ```
 
-Replace `{endgame}` with `krk`, `kpk`, `kbnk`, `knnk`, or `kbbk`.
+Replace `{endgame}` with `krk`, `kpk`, `kbnk`, `knnk`, or `kbbk`. Only `knnk`
+and `kbbk` have `run_pipeline.sh`; for the others, run the four steps directly.
 
 ## Analysis
 

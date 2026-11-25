@@ -41,8 +41,8 @@ CHESS_CONCEPTS = {
     "bk_p_df":                   "BK–pawn file difference (signed)",
     "file_gap":                  "file distance between kings and pawn",
     "wk_dist_to_nearest_key":    "WK distance from pawn's key squares",
-    "e2_bk_p":                   "BK inside pawn square (rule of the square)",
-    "e2_wk_p":                   "WK inside pawn square",
+    "e2_bk_p":                   "BK–pawn squared Euclidean distance",
+    "e2_wk_p":                   "WK–pawn squared Euclidean distance",
     # KBNK corner geometry
     "bishop_color":              "bishop square color",
     "bk_to_correct_corner":      "BK dist from correct-color corner",
@@ -89,7 +89,7 @@ CHESS_CONCEPTS = {
 
 ENDGAMES = {
     "KRK":  "logs/krk_classifier",
-    "KPK":  "logs/kpk",
+    "KPK":  "logs/kpk_classifier",
     "KBNK": "logs/kbnk_classifier",
     "KNNK": "logs/knnk_classifier",
     "KBBK": "logs/kbbk_classifier",
@@ -180,7 +180,7 @@ def main():
     print("COMPRESSION — LEAF COUNT vs POSITION COUNT")
     print(f"{'=' * 70}")
     POSITIONS = {
-        "KRK": 900_000, "KPK": 331_000,
+        "KRK": 399_112, "KPK": 331_000,
         "KBNK": 24_536_088, "KNNK": 12_579_944, "KBBK": 11_891_488,
     }
     print(f"  {'Endgame':<8} {'Positions':>12}  {'Leaves':>8}  {'Pos/Leaf':>10}  {'Bits/pos (raw)':>15}")
